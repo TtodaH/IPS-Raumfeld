@@ -34,7 +34,7 @@ MC_ReloadModule(<ID der Instanz Modules>, 'IPS-Raumfeld');
 Ein Neustart ist nicht noetig. Wichtig: `library.json` muss das vollstaendige
 Format mit `compatibility`, `version`, `build` und `date` enthalten, sonst
 werden die `module.json`-Dateien ignoriert (Details in
-[docs/ENTWICKLUNG.md](docs/ENTWICKLUNG.md)).
+[.dev/docs/ENTWICKLUNG.md](.dev/docs/ENTWICKLUNG.md)).
 
 ## Einrichtung
 
@@ -119,33 +119,37 @@ Im Configurator (Präfix `RFC_`):
 ## Aufbau
 
 ```
-IPS-Raumfeld/
-  library.json               Bibliothek (vollstaendiges Format, siehe docs)
-  RaumfeldDiscovery/
-    module.json  module.php  SSDP-Suche, legt Configurator an
-  RaumfeldConfigurator/
-    module.json  module.php  liest Host-API, legt Renderer an
-  RaumfeldRenderer/
-    module.json  module.php  form.json   SOAP-Steuerung eines Raums
-  docs/                      API-, Installations- und Entwicklerdoku
-  tests/harness.php          Live-Test gegen echtes Geraet
-  tools/                     Deploy- und Testwerkzeuge
+IPS-Raumfeld/                 <- Bibliothekswurzel
+  library.json                Pflichtdatei der Bibliothek
+  README.md
+  LICENSE
+  .gitignore
+  RaumfeldDiscovery/          Modul (module.json + module.php)
+  RaumfeldConfigurator/       Modul (module.json + module.php)
+  RaumfeldRenderer/           Modul (module.json + module.php + form.json)
+  .dev/                       Entwicklung: Doku, Tests, Werkzeuge
 ```
+
+Wichtig: IP-Symcon wertet **jeden** Unterordner der Bibliothekswurzel als Modul.
+Ordner ohne `module.json` machen die Bibliothek ungueltig
+(`Modul IPS-Raumfeld beinhaltet ungueltiges Module ...`). Entwicklungsdateien
+liegen deshalb unter `.dev/` – Punkt-Ordner werden ignoriert.
+
 
 ## Dokumentation
 
-- [docs/API.md](docs/API.md) – reverse-engineerte Geräteschnittstelle
-- [docs/INSTALL.md](docs/INSTALL.md) – Installation und Einrichtung
-- [docs/ENTWICKLUNG.md](docs/ENTWICKLUNG.md) – Module entwickeln und testen
+- [.dev/docs/API.md](.dev/docs/API.md) – reverse-engineerte Geräteschnittstelle
+- [.dev/docs/INSTALL.md](.dev/docs/INSTALL.md) – Installation und Einrichtung
+- [.dev/docs/ENTWICKLUNG.md](.dev/docs/ENTWICKLUNG.md) – Module entwickeln und testen
 
 ## Pruefung gegen den offiziellen Modul-Validator
 
 Die JSON-Dateien werden gegen die Schemas des Symcon-Modul-Validators geprueft
 (Quelle: `https://www.symcon.de/assets/files/validation/`, Ablage unter
-`docs/ref/`).
+`.dev/docs/ref/`).
 
 ```bash
-python tools/validate.py
+python .dev/tools/validate.py
 ```
 
 Erwartete Ausgabe: `Alle Dateien sind schema-konform.` mit genau einer

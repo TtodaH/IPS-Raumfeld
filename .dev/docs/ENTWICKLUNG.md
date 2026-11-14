@@ -101,13 +101,13 @@ for f in */module.php; do php -l "$f"; done
 
 ## Live-Test
 
-`tests/harness.php` lädt den echten Modulcode gegen einen Stub und spricht ein
+`.dev/tests/harness.php` lädt den echten Modulcode gegen einen Stub und spricht ein
 reales Gerät an. Der Stub ersetzt `IPSModuleStrict`, weil die echte Klasse in
 IP-Symcon einen Instanz-Konstruktor verlangt; zusätzlich stellt er
 `MaintainVariable`, `VARIABLETYPE_*`, `IS_ACTIVE` und die Attributmethoden bereit.
 
 ```bash
-python tools/test_live.py 192.168.10.18
+python .dev/tools/test_live.py 192.168.10.18
 ```
 
 Der Test prüft:
@@ -127,10 +127,10 @@ Der Test prüft:
 Der offizielle Modul-Validator prueft `library.json`, `module.json`,
 `locale.json` und `form.json` clientseitig per AJV gegen JSON-Schemas von
 `https://www.symcon.de/assets/files/validation/`. Die Schemas liegen im Repo
-unter `docs/ref/`, damit die Pruefung offline und reproduzierbar laeuft.
+unter `.dev/docs/ref/`, damit die Pruefung offline und reproduzierbar laeuft.
 
 ```bash
-python tools/validate.py
+python .dev/tools/validate.py
 ```
 
 Bekannte Abweichung: `librarySchema.json` erlaubt fuer
@@ -149,7 +149,7 @@ Zusaetzlich beachten:
 ## Deployment in eine laufende Instanz
 
 ```bash
-python tools/deploy.py
+python .dev/tools/deploy.py
 ```
 
 Das Skript schreibt alle Moduldateien per JSON-RPC nach
@@ -160,10 +160,10 @@ werden:
 MC_ReloadModule(30416, 'IPS-Raumfeld');
 ```
 
-`tools/deploy.py` prüft die Registrierung direkt nach dem Schreiben.
+`.dev/tools/deploy.py` prüft die Registrierung direkt nach dem Schreiben.
 
 ```bash
-python tools/deploy.py --remove
+python .dev/tools/deploy.py --remove
 ```
 
 ## IP-Symcon-API-Hinweise
@@ -194,5 +194,5 @@ temporäre String-Variable beschrieben und per `GetValue` gelesen.
 1. Öffentliche Methode im Renderer anlegen (z. B. `Seek`).
 2. SOAP-Aufruf über `RFSoapAV(...)` ergänzen.
 3. Button in `form.json` unter `actions` hinzufügen.
-4. `php -l` und `tools/test_live.py` ausführen.
+4. `php -l` und `.dev/tools/test_live.py` ausführen.
 5. README-Tabelle der Funktionen aktualisieren.

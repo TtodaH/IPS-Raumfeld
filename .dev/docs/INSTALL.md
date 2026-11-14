@@ -46,7 +46,7 @@ MC_ReloadModule(<ID der Instanz Modules>, 'IPS-Raumfeld');
 
 Die Module erscheinen anschliessend unter **Instanz hinzufuegen -> Teufel**.
 
-Alternativ kann `tools/deploy.py` die Dateien per JSON-RPC-API in eine laufende
+Alternativ kann `.dev/tools/deploy.py` die Dateien per JSON-RPC-API in eine laufende
 Instanz schreiben (siehe [ENTWICKLUNG.md](ENTWICKLUNG.md)).
 
 ## Einrichtung in IP-Symcon

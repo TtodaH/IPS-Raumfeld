@@ -18,8 +18,8 @@ from pathlib import Path
 
 import jsonschema
 
-REPO = Path(__file__).resolve().parent.parent
-SCHEMAS = REPO / "docs" / "ref"
+REPO = Path(__file__).resolve().parent.parent.parent
+SCHEMAS = Path(__file__).resolve().parent.parent / "docs" / "ref"
 
 
 def load_schema(name: str) -> dict:

@@ -18,7 +18,7 @@ import urllib.request
 from pathlib import Path
 
 IPS_URL = "http://192.168.10.25:3777/api/"
-REPO = Path(__file__).resolve().parent.parent
+REPO = Path(__file__).resolve().parent.parent.parent
 LIBRARY_DIR = "IPS-Raumfeld"
 MODULES = ["RaumfeldDiscovery", "RaumfeldConfigurator", "RaumfeldRenderer"]
 _seq = [0]
