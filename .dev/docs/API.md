@@ -98,6 +98,32 @@ Geräts – er muss daher bei jeder Verbindung neu aus `listDevices` gelesen wer
 Ist ein Raum keiner Zone zugeordnet, erscheint er unter `unassignedRooms`.
 Das Modul behandelt diese Räume als eigene Gruppe „Nicht zugeordnet“.
 
+### Raum ohne Zone: beide LEDs leuchten
+
+Ist ein Raum keiner Zone zugeordnet, erscheint er unter `unassignedRooms` und
+das Geraet signalisiert das ueber die LEDs (beim Sounddeck leuchten beide).
+Das Geraet ist dabei voll erreichbar: `Ping`, `getZones`, Lautstaerke und
+Transport antworten normal.
+
+Zuordnung herstellen (ohne `zoneUDN` wird eine neue Zone erzeugt):
+
+```
+GET /connectRoomToZone?roomUDN=uuid:adfdd731-504a-4c2d-ba78-336fb5929225
+```
+
+Danach steht der Raum unter `<zones>`, `unassignedRooms` verschwindet,
+`powerState` wechselt auf `ACTIVE` und die LEDs gehen aus.
+
+Wichtig: Der Renderer-Port aendert sich beim Zonenwechsel (beobachtet
+`51331` -> `60736`). IP-Symcon-Instanzen danach einmal neu uebernehmen.
+
+Zonen tragen kein `name`-Attribut. Fuer Anzeigen muss ein Ersatzname gebildet
+werden (`Zone 1`, `Zone 2`, ...).
+
+Es gibt **keine** LED-Steuerung in der API. Geprueft wurden RenderingControl,
+AVTransport, ConnectionManager, RaumfeldGenerator, SetupService und
+ConfigService.
+
 ### Long-Polling
 
 `listDevices` und `getZones` unterstützen den Request-Header `updateID`.
