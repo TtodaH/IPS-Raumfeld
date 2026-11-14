@@ -38,7 +38,13 @@ git clone https://github.com/TtodaH/IPS-Raumfeld \
   /var/lib/symcon/modules/IPS-Raumfeld
 ```
 
-Danach IP-Symcon neu starten, damit die Module erkannt werden.
+Danach die Bibliothek neu laden:
+
+```php
+MC_ReloadModule(<ID der Instanz Modules>, 'IPS-Raumfeld');
+```
+
+Die Module erscheinen anschliessend unter **Instanz hinzufuegen -> Teufel**.
 
 Alternativ kann `tools/deploy.py` die Dateien per JSON-RPC-API in eine laufende
 Instanz schreiben (siehe [ENTWICKLUNG.md](ENTWICKLUNG.md)).

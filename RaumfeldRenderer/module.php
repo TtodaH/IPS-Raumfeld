@@ -36,19 +36,14 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->RegisterPropertyString('MacAddress', '');
         $this->RegisterPropertyInteger('UpdateInterval', 0);
 
-        $this->RegisterVariableInteger('Volume', 'Lautstaerke', '~Intensity.100', 10);
-        $this->EnableAction('Volume');
-        $this->RegisterVariableBoolean('Mute', 'Stumm', '~Switch', 20);
-        $this->EnableAction('Mute');
-        $this->RegisterVariableString('TransportState', 'Wiedergabe', '', 30);
-        $this->RegisterVariableString('PowerState', 'Betriebszustand', '', 40);
+        $this->RegisterAttributeString('RendererLocation', '');
 
         $this->RegisterTimer('RFUpdate', 0, 'RFR_UpdateState($_IPS[\'TARGET\']);');
     }
 
     public function Destroy(): void
     {
-        $this->UnregisterTimer('RFUpdate');
+        $this->SetTimerInterval('RFUpdate', 0);
         parent::Destroy();
     }
 
@@ -57,7 +52,15 @@ class RaumfeldRenderer extends IPSModuleStrict
         parent::ApplyChanges();
 
         $this->SetTimerInterval('RFUpdate', 0);
-        $this->SetBuffer('RendererLocation', '');
+        $this->WriteAttributeString('RendererLocation', '');
+
+        $this->MaintainVariable('Volume', 'Lautstaerke', VARIABLETYPE_INTEGER, '~Intensity.100', 10, true);
+        $this->MaintainVariable('Mute', 'Stumm', VARIABLETYPE_BOOLEAN, '~Switch', 20, true);
+        $this->MaintainVariable('TransportState', 'Wiedergabe', VARIABLETYPE_STRING, '', 30, true);
+        $this->MaintainVariable('PowerState', 'Betriebszustand', VARIABLETYPE_STRING, '', 40, true);
+
+        $this->EnableAction('Volume');
+        $this->EnableAction('Mute');
 
         $host = trim($this->ReadPropertyString('Host'));
         if ($host === '' || $this->ReadPropertyString('RendererUDN') === '') {
@@ -70,7 +73,7 @@ class RaumfeldRenderer extends IPSModuleStrict
             return;
         }
 
-        $this->SetStatus(102);
+        $this->SetStatus(IS_ACTIVE);
 
         $interval = $this->ReadPropertyInteger('UpdateInterval');
         if ($interval > 0) {
@@ -78,63 +81,6 @@ class RaumfeldRenderer extends IPSModuleStrict
         }
 
         $this->RFUpdateState();
-    }
-
-    public function GetConfigurationForm(): string
-    {
-        $host = trim($this->ReadPropertyString('Host'));
-        $info = '';
-        if ($host !== '') {
-            $ping = $this->RFPingHost($host);
-            $info = ($ping === '') ? 'Host ' . $host . ' antwortet nicht.' : 'Host: ' . $host . ' (' . $ping . ')';
-        }
-
-        return json_encode([
-            'elements' => [
-                ['type' => 'Label', 'label' => $info],
-                [
-                    'type' => 'ExpansionPanel',
-                    'caption' => 'Geraet',
-                    'items' => [
-                        [
-                            'type' => 'ValidationTextBox',
-                            'name' => 'Host',
-                            'caption' => 'Host / IP',
-                            'validate' => '^([0-9]{1,3}\\.){3}[0-9]{1,3}$',
-                        ],
-                        ['type' => 'ValidationTextBox', 'name' => 'RoomUDN', 'caption' => 'Raum-UDN'],
-                        ['type' => 'ValidationTextBox', 'name' => 'RoomName', 'caption' => 'Raumname'],
-                        ['type' => 'ValidationTextBox', 'name' => 'RendererUDN', 'caption' => 'Renderer-UDN'],
-                        ['type' => 'ValidationTextBox', 'name' => 'RendererName', 'caption' => 'Renderername'],
-                        [
-                            'type' => 'ValidationTextBox',
-                            'name' => 'MacAddress',
-                            'caption' => 'MAC-Adresse (fuer Wake-on-LAN)',
-                            'validate' => '^$|^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$',
-                        ],
-                        [
-                            'type' => 'NumberSpinner',
-                            'name' => 'UpdateInterval',
-                            'caption' => 'Statusabfrage (Sekunden, 0 = aus)',
-                            'minimum' => 0,
-                            'maximum' => 3600,
-                        ],
-                    ],
-                ],
-            ],
-            'actions' => [
-                ['type' => 'Button', 'label' => 'Status jetzt aktualisieren', 'onClick' => 'RFR_UpdateState($id);'],
-                ['type' => 'Button', 'label' => 'Raum aufwecken', 'onClick' => 'RFR_Wake($id);'],
-                ['type' => 'Button', 'label' => 'Raum in Standby', 'onClick' => 'RFR_Standby($id);'],
-                ['type' => 'Button', 'label' => 'Wake-on-LAN senden', 'onClick' => 'RFR_WakeOnLan($id);'],
-                ['type' => 'Button', 'label' => 'Verbindung neu aufbauen', 'onClick' => 'RFR_Reconnect($id);'],
-            ],
-            'status' => [
-                ['code' => 104, 'icon' => 'inactive', 'caption' => 'Host oder Renderer nicht konfiguriert'],
-                ['code' => 201, 'icon' => 'error', 'caption' => 'Renderer nicht erreichbar'],
-                ['code' => 202, 'icon' => 'inactive', 'caption' => 'Geraet im Standby'],
-            ],
-        ]) ?: '{}';
     }
 
     public function RequestAction(string $Ident, mixed $Value): void
@@ -160,9 +106,9 @@ class RaumfeldRenderer extends IPSModuleStrict
 
     public function Reconnect(): void
     {
-        $this->SetBuffer('RendererLocation', '');
+        $this->WriteAttributeString('RendererLocation', '');
         if ($this->RFResolveRenderer()) {
-            $this->SetStatus(102);
+            $this->SetStatus(IS_ACTIVE);
             $this->RFUpdateState();
         } else {
             $this->SetStatus(201);
@@ -215,11 +161,13 @@ class RaumfeldRenderer extends IPSModuleStrict
             $this->RFHostGet('/leaveStandby?roomUDN=' . rawurlencode($room));
         }
 
-        // Ist das Geraet im Tiefschlaf, hilft nur Wake-on-LAN.
         if ($this->RFPingHost(trim($this->ReadPropertyString('Host'))) === '') {
             $this->WakeOnLan();
             usleep(2000000);
         }
+
+        // Das Geraet braucht einen Moment, bis powerState auf ACTIVE wechselt.
+        usleep(1500000);
 
         $this->Reconnect();
     }
@@ -289,10 +237,10 @@ class RaumfeldRenderer extends IPSModuleStrict
         $power = $this->RFRoomPowerState();
         if ($power !== '') {
             $this->SetValue('PowerState', $power);
-            if ($this->GetStatus() !== 202 && $power !== 'ACTIVE') {
+            if ($power !== 'ACTIVE') {
                 $this->SetStatus(202);
-            } elseif ($this->GetStatus() === 202 && $power === 'ACTIVE') {
-                $this->SetStatus(102);
+            } elseif ($this->GetStatus() === 202) {
+                $this->SetStatus(IS_ACTIVE);
             }
         }
     }
@@ -355,7 +303,7 @@ class RaumfeldRenderer extends IPSModuleStrict
             if ($location === '') {
                 continue;
             }
-            $this->SetBuffer('RendererLocation', $location);
+            $this->WriteAttributeString('RendererLocation', $location);
             return true;
         }
 
@@ -365,7 +313,7 @@ class RaumfeldRenderer extends IPSModuleStrict
 
     private function RFBaseURL(): string
     {
-        $location = $this->GetBuffer('RendererLocation');
+        $location = $this->ReadAttributeString('RendererLocation');
         if ($location === '') {
             return '';
         }
@@ -408,7 +356,6 @@ class RaumfeldRenderer extends IPSModuleStrict
             return $result;
         }
 
-        // Adresse kann sich nach Standby/Neustart geaendert haben.
         if (!$this->RFResolveRenderer()) {
             return '';
         }

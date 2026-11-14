@@ -1,0 +1,94 @@
+{
+    "elements": [
+        {
+            "type": "ExpansionPanel",
+            "caption": "Geraet",
+            "expanded": true,
+            "items": [
+                {
+                    "type": "ValidationTextBox",
+                    "name": "Host",
+                    "caption": "Host / IP",
+                    "validate": "^([0-9]{1,3}\\.){3}[0-9]{1,3}$"
+                },
+                {
+                    "type": "ValidationTextBox",
+                    "name": "RoomUDN",
+                    "caption": "Raum-UDN"
+                },
+                {
+                    "type": "ValidationTextBox",
+                    "name": "RoomName",
+                    "caption": "Raumname"
+                },
+                {
+                    "type": "ValidationTextBox",
+                    "name": "RendererUDN",
+                    "caption": "Renderer-UDN"
+                },
+                {
+                    "type": "ValidationTextBox",
+                    "name": "RendererName",
+                    "caption": "Renderername"
+                },
+                {
+                    "type": "ValidationTextBox",
+                    "name": "MacAddress",
+                    "caption": "MAC-Adresse (fuer Wake-on-LAN)",
+                    "validate": "^$|^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "UpdateInterval",
+                    "caption": "Statusabfrage (Sekunden, 0 = aus)",
+                    "minimum": 0,
+                    "maximum": 3600
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "type": "Button",
+            "caption": "Status jetzt aktualisieren",
+            "onClick": "RFR_UpdateState($id);"
+        },
+        {
+            "type": "Button",
+            "caption": "Raum aufwecken",
+            "onClick": "RFR_Wake($id);"
+        },
+        {
+            "type": "Button",
+            "caption": "Raum in Standby",
+            "onClick": "RFR_Standby($id);"
+        },
+        {
+            "type": "Button",
+            "caption": "Wake-on-LAN senden",
+            "onClick": "RFR_WakeOnLan($id);"
+        },
+        {
+            "type": "Button",
+            "caption": "Verbindung neu aufbauen",
+            "onClick": "RFR_Reconnect($id);"
+        }
+    ],
+    "status": [
+        {
+            "code": 104,
+            "icon": "inactive",
+            "caption": "Host oder Renderer nicht konfiguriert"
+        },
+        {
+            "code": 201,
+            "icon": "error",
+            "caption": "Renderer nicht erreichbar"
+        },
+        {
+            "code": 202,
+            "icon": "inactive",
+            "caption": "Geraet im Standby"
+        }
+    ]
+}

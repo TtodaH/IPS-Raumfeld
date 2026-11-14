@@ -10,11 +10,21 @@
  * getestete Modulcode bleibt dabei unveraendert.
  */
 
+if (!defined('VARIABLETYPE_BOOLEAN')) {
+    define('VARIABLETYPE_BOOLEAN', 0);
+    define('VARIABLETYPE_INTEGER', 1);
+    define('VARIABLETYPE_FLOAT', 2);
+    define('VARIABLETYPE_STRING', 3);
+    define('IS_ACTIVE', 102);
+    define('IS_INACTIVE', 104);
+}
+
 class RFStub
 {
     public array $props = [];
     public array $vars = [];
-    public array $buffers = [];
+    public array $attributes = [];
+    public array $actions = [];
     public int $status = 0;
 
     public function Create(): void {}
@@ -22,19 +32,34 @@ class RFStub
     public function Destroy(): void {}
     public function RegisterPropertyString(string $name, string $value): void { $this->props[$name] = $value; }
     public function RegisterPropertyInteger(string $name, int $value): void { $this->props[$name] = $value; }
-    public function RegisterVariableInteger(string $ident, string $name, string $profile, int $position): void { $this->vars[$ident] = 0; }
-    public function RegisterVariableBoolean(string $ident, string $name, string $profile, int $position): void { $this->vars[$ident] = false; }
-    public function RegisterVariableString(string $ident, string $name, string $profile, int $position): void { $this->vars[$ident] = ''; }
-    public function EnableAction(string $ident): void {}
+    public function ReadPropertyString(string $name): string { return (string) ($this->props[$name] ?? ''); }
+    public function ReadPropertyInteger(string $name): int { return (int) ($this->props[$name] ?? 0); }
+
+    public function RegisterAttributeString(string $name, string $value): void { $this->attributes[$name] = $value; }
+    public function RegisterAttributeInteger(string $name, int $value): void { $this->attributes[$name] = $value; }
+    public function ReadAttributeString(string $name): string { return (string) ($this->attributes[$name] ?? ''); }
+    public function ReadAttributeInteger(string $name): int { return (int) ($this->attributes[$name] ?? 0); }
+    public function WriteAttributeString(string $name, string $value): void { $this->attributes[$name] = $value; }
+    public function WriteAttributeInteger(string $name, int $value): void { $this->attributes[$name] = $value; }
+
+    public function MaintainVariable(string $ident, string $name, int $type, string $profile, int $position, bool $keep): void
+    {
+        if (!array_key_exists($ident, $this->vars)) {
+            $this->vars[$ident] = match ($type) {
+                VARIABLETYPE_BOOLEAN => false,
+                VARIABLETYPE_INTEGER => 0,
+                VARIABLETYPE_FLOAT => 0.0,
+                default => '',
+            };
+        }
+    }
+
+    public function EnableAction(string $ident): void { $this->actions[$ident] = true; }
     public function RegisterTimer(string $name, int $interval, string $script): void {}
     public function UnregisterTimer(string $name): void {}
     public function SetTimerInterval(string $name, int $interval): void {}
-    public function ReadPropertyString(string $name): string { return (string) ($this->props[$name] ?? ''); }
-    public function ReadPropertyInteger(string $name): int { return (int) ($this->props[$name] ?? 0); }
     public function SetStatus(int $status): void { $this->status = $status; }
     public function GetStatus(): int { return $this->status; }
-    public function SetBuffer(string $name, string $value): void { $this->buffers[$name] = $value; }
-    public function GetBuffer(string $name): string { return (string) ($this->buffers[$name] ?? ''); }
     public function SetValue(string $ident, mixed $value): void { $this->vars[$ident] = $value; }
     public function GetValue(string $ident): mixed { return $this->vars[$ident] ?? null; }
     public function SendDebug(string $message, mixed $data, int $format): void {}
@@ -124,9 +149,9 @@ $renderer->UpdateState();
 rf_check('Status nach Wake aktiv', $renderer->GetStatus() === 102, 'status=' . $renderer->GetStatus());
 
 // Recovery: falscher Port im Buffer muss automatisch neu aufgeloest werden
-$renderer->buffers['RendererLocation'] = 'http://192.168.10.18:1/falsch.xml';
+$renderer->attributes['RendererLocation'] = 'http://192.168.10.18:1/falsch.xml';
 $renderer->UpdateState();
-$recovered = $renderer->buffers['RendererLocation'] ?? '';
+$recovered = $renderer->attributes['RendererLocation'] ?? '';
 rf_check('Recovery loest Adresse neu auf', strpos($recovered, ':1/') === false && $recovered !== '', $recovered);
 rf_check('Recovery liest Lautstaerke', is_int($renderer->GetValue('Volume')), 'volume=' . var_export($renderer->GetValue('Volume'), true));
 rf_check('PowerState gelesen', (string) $renderer->GetValue('PowerState') !== '', (string) $renderer->GetValue('PowerState'));

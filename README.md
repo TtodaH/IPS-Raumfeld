@@ -25,7 +25,16 @@ direkt.
 ### Manuell
 
 Den Ordner nach `<IP-Symcon-Kernelverzeichnis>/modules/IPS-Raumfeld/` kopieren
-und IP-Symcon neu starten.
+und anschliessend die Bibliothek neu laden:
+
+```php
+MC_ReloadModule(<ID der Instanz Modules>, 'IPS-Raumfeld');
+```
+
+Ein Neustart ist nicht noetig. Wichtig: `library.json` muss das vollstaendige
+Format mit `compatibility`, `version`, `build` und `date` enthalten, sonst
+werden die `module.json`-Dateien ignoriert (Details in
+[docs/ENTWICKLUNG.md](docs/ENTWICKLUNG.md)).
 
 ## Einrichtung
 
@@ -111,13 +120,16 @@ Im Configurator (Präfix `RFC_`):
 
 ```
 IPS-Raumfeld/
-  library.json
-  RaumfeldDiscovery/     SSDP-Suche, legt Configurator an
-  RaumfeldConfigurator/  liest Host-API, legt Renderer an
-  RaumfeldRenderer/      SOAP-Steuerung eines Raums
-  docs/                  API- und Installationsdokumentation
-  tests/harness.php      Live-Test gegen echtes Gerät
-  tools/                 Deploy- und Testwerkzeuge
+  library.json               Bibliothek (vollstaendiges Format, siehe docs)
+  RaumfeldDiscovery/
+    module.json  module.php  SSDP-Suche, legt Configurator an
+  RaumfeldConfigurator/
+    module.json  module.php  liest Host-API, legt Renderer an
+  RaumfeldRenderer/
+    module.json  module.php  form.json   SOAP-Steuerung eines Raums
+  docs/                      API-, Installations- und Entwicklerdoku
+  tests/harness.php          Live-Test gegen echtes Geraet
+  tools/                     Deploy- und Testwerkzeuge
 ```
 
 ## Dokumentation

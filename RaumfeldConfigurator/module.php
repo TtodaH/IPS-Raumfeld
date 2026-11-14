@@ -96,6 +96,13 @@ class RaumfeldConfigurator extends IPSModuleStrict
                     'onClick' => 'IPS_ApplyChanges($id);',
                 ],
             ],
+            'values' => $values,
+            'columns' => [
+                ['name' => 'Zone', 'caption' => 'Zone', 'width' => '150px'],
+                ['name' => 'Raum', 'caption' => 'Raum', 'width' => '150px'],
+                ['name' => 'Renderer', 'caption' => 'Renderer', 'width' => 'auto'],
+                ['name' => 'UDN', 'caption' => 'UDN', 'width' => '260px'],
+            ],
             'status' => [
                 ['code' => 104, 'icon' => 'inactive', 'caption' => 'Kein Host konfiguriert'],
                 ['code' => 201, 'icon' => 'error', 'caption' => 'Host nicht erreichbar'],
