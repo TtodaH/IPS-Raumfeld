@@ -35,6 +35,10 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->RegisterPropertyString('RendererName', '');
         $this->RegisterPropertyString('MacAddress', '');
         $this->RegisterPropertyInteger('UpdateInterval', 0);
+        // Ein/Aus als eigene Variable in der Instanz. Abschaltbar, weil die
+        // Kombination Schalter + Helligkeitsregler von der Visu als Licht
+        // erkannt wird und dann die Media-Player-Kachel verdraengt.
+        $this->RegisterPropertyBoolean('PowerVariable', false);
 
         $this->RegisterAttributeString('RendererLocation', '');
 
@@ -54,8 +58,10 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->SetTimerInterval('RFUpdate', 0);
         $this->WriteAttributeString('RendererLocation', '');
 
-        // Ein/Aus: an = leaveStandby, aus = enterManualStandby
-        $this->MaintainVariable('Power', 'Ein/Aus', VARIABLETYPE_BOOLEAN, '~Switch', 1, true);
+        // Ein/Aus: an = leaveStandby, aus = enterManualStandby.
+        // keep=false entfernt die Variable, was die Licht-Erkennung der Kachel
+        // (Schalter + Helligkeitsregler) aufloest.
+        $this->MaintainVariable('Power', 'Ein/Aus', VARIABLETYPE_BOOLEAN, '~Switch', 1, $this->ReadPropertyBoolean('PowerVariable'));
         // Media-Player-Kachel: Integer mit ~PlaybackPreviousNext und Variablenaktion
         $this->MaintainVariable('Playback', 'Wiedergabe', VARIABLETYPE_INTEGER, '~PlaybackPreviousNext', 5, true);
         $this->MaintainVariable('Volume', 'Lautstaerke', VARIABLETYPE_INTEGER, '~Intensity.100', 10, true);

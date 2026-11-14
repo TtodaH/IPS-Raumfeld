@@ -43,6 +43,11 @@
                     "caption": "Statusabfrage (Sekunden, 0 = aus)",
                     "minimum": 0,
                     "maximum": 3600
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "PowerVariable",
+                    "caption": "Ein/Aus als eigene Variable (schaltet die Kachel auf Licht um)"
                 }
             ]
         }
