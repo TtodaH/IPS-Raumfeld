@@ -115,7 +115,21 @@ $renderer->props['RendererUDN'] = $rendererUDN;
 $renderer->props['RendererName'] = 'Speaker Wohnzimmer';
 $renderer->props['UpdateInterval'] = 0;
 $renderer->ApplyChanges();
-rf_check('Renderer Status 102', $renderer->GetStatus() === 102, 'status=' . $renderer->GetStatus());
+rf_check('Renderer meldet 102 oder 202', in_array($renderer->GetStatus(), [102, 202], true), 'status=' . $renderer->GetStatus());
+
+// Geraet vor dem Weiterstest aufwecken
+$renderer->Wake();
+usleep(1500000);
+$renderer->UpdateState();
+rf_check('Status nach Wake aktiv', $renderer->GetStatus() === 102, 'status=' . $renderer->GetStatus());
+
+// Recovery: falscher Port im Buffer muss automatisch neu aufgeloest werden
+$renderer->buffers['RendererLocation'] = 'http://192.168.10.18:1/falsch.xml';
+$renderer->UpdateState();
+$recovered = $renderer->buffers['RendererLocation'] ?? '';
+rf_check('Recovery loest Adresse neu auf', strpos($recovered, ':1/') === false && $recovered !== '', $recovered);
+rf_check('Recovery liest Lautstaerke', is_int($renderer->GetValue('Volume')), 'volume=' . var_export($renderer->GetValue('Volume'), true));
+rf_check('PowerState gelesen', (string) $renderer->GetValue('PowerState') !== '', (string) $renderer->GetValue('PowerState'));
 
 $volume = $renderer->GetValue('Volume');
 rf_check('Lautstaerke gelesen', is_int($volume) && $volume >= 0 && $volume <= 100, 'volume=' . var_export($volume, true));
