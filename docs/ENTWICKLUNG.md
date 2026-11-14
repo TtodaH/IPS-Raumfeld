@@ -122,6 +122,30 @@ Der Test prüft:
 - `PowerState`
 - Fehlerfälle (unerreichbarer Host, leere Konfiguration)
 
+## Schema-Validierung
+
+Der offizielle Modul-Validator prueft `library.json`, `module.json`,
+`locale.json` und `form.json` clientseitig per AJV gegen JSON-Schemas von
+`https://www.symcon.de/assets/files/validation/`. Die Schemas liegen im Repo
+unter `docs/ref/`, damit die Pruefung offline und reproduzierbar laeuft.
+
+```bash
+python tools/validate.py
+```
+
+Bekannte Abweichung: `librarySchema.json` erlaubt fuer
+`compatibility.version` nur Werte bis `6.2`. `IPSModuleStrict` erfordert
+mindestens `8.1`, deshalb steht dort `8.1`. Das Skript meldet diesen einen
+Fall als Warnung statt als Fehler; jede andere Abweichung ist ein Fehler.
+
+Zusaetzlich beachten:
+
+- `name` in `library.json` darf nur `A-Z a-z 0-9 _` und Leerzeichen enthalten,
+  keine Bindestaebe (der Bibliotheksordner darf weiterhin einen Bindestrich
+  haben).
+- `prefix` in `module.json` nur `A-Z 0-9`.
+- `url` muss mit `http://` oder `https://` beginnen.
+
 ## Deployment in eine laufende Instanz
 
 ```bash

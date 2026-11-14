@@ -138,6 +138,27 @@ IPS-Raumfeld/
 - [docs/INSTALL.md](docs/INSTALL.md) – Installation und Einrichtung
 - [docs/ENTWICKLUNG.md](docs/ENTWICKLUNG.md) – Module entwickeln und testen
 
+## Pruefung gegen den offiziellen Modul-Validator
+
+Die JSON-Dateien werden gegen die Schemas des Symcon-Modul-Validators geprueft
+(Quelle: `https://www.symcon.de/assets/files/validation/`, Ablage unter
+`docs/ref/`).
+
+```bash
+python tools/validate.py
+```
+
+Erwartete Ausgabe: `Alle Dateien sind schema-konform.` mit genau einer
+Warnung zu `compatibility.version`. Diese Warnung ist bekannt: das offizielle
+`librarySchema.json` endet bei Version 6.2, Module auf Basis von
+`IPSModuleStrict` brauchen jedoch mindestens 8.1. Das Referenzmodul
+`IPS-KNXBusMonitor` nutzt ebenfalls 8.1.
+
+```bash
+for f in */module.php; do php -l "$f"; done   # PHP-Syntax
+docker run --rm -v "$PWD:/app" php:8.3-cli sh -c 'true'  # optional
+```
+
 ## Sicherheitshinweis
 
 Raumfeld-Geräte haben **keine Authentifizierung im lokalen Netz**. Jedes Gerät
