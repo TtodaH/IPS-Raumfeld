@@ -58,13 +58,19 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->SetTimerInterval('RFUpdate', 0);
         $this->WriteAttributeString('RendererLocation', '');
 
+        // Profile zuerst anlegen: MaintainVariable greift sonst auf ein
+        // noch nicht existierendes Profil zurueck.
+        $this->RFCreateProfiles();
+
         // Ein/Aus: an = leaveStandby, aus = enterManualStandby.
         // keep=false entfernt die Variable, was die Licht-Erkennung der Kachel
         // (Schalter + Helligkeitsregler) aufloest.
         $this->MaintainVariable('Power', 'Ein/Aus', VARIABLETYPE_BOOLEAN, '~Switch', 1, $this->ReadPropertyBoolean('PowerVariable'));
         // Media-Player-Kachel: Integer mit ~PlaybackPreviousNext und Variablenaktion
         $this->MaintainVariable('Playback', 'Wiedergabe', VARIABLETYPE_INTEGER, '~PlaybackPreviousNext', 5, true);
-        $this->MaintainVariable('Volume', 'Lautstaerke', VARIABLETYPE_INTEGER, '~Intensity.100', 10, true);
+        // Bewusst kein ~Intensity.100: dieses Profil bedeutet "Helligkeit" und
+        // laesst die Visu die Instanz als Licht (Dimmer-Ring) darstellen.
+        $this->MaintainVariable('Volume', 'Lautstaerke', VARIABLETYPE_INTEGER, 'Raumfeld.Volume', 10, true);
         // ~Mute leitet in der Kachel die Verwendung "Stumm schalten" ab
         $this->MaintainVariable('Mute', 'Stumm', VARIABLETYPE_BOOLEAN, '~Mute', 20, true);
         $this->MaintainVariable('TransportState', 'Transportstatus', VARIABLETYPE_STRING, '', 30, true);
@@ -86,8 +92,6 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->EnableAction('InputSource');
         $this->EnableAction('SubwooferLevel');
         $this->EnableAction('StandbyDelay');
-
-        $this->RFCreateProfiles();
 
         // Namen explizit setzen: MaintainVariable benennt bestehende Variablen
         // nicht immer um, was sonst zu zwei Variablen "Wiedergabe" fuehrt.
