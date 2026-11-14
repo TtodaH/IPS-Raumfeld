@@ -1,0 +1,1414 @@
+  <!DOCTYPE html>
+
+<html lang="de" class="scroll-smooth scroll-p-24">
+<head>
+  <!--meta data block-->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <!-- DESIGN | CONSEQUENCE Werbung und Kommunikation GmbH -->
+  <meta name="author"
+        content="Symcon GmbH">
+  <meta name="publisher"
+        content="Symcon GmbH">
+  <meta name="copyright"
+        content="Symcon GmbH">
+  <meta name="description"
+        content="Automation Solution">
+  <meta name="keywords"
+        content="SmartHome, Automatisierungssoftware, Software, IP-Symcon, Symcon, Sicherheit, Automation, Solution, Baukasten, Smart, Home">
+  <meta name="pagetype"
+        content="SmartHome Software Hardware">
+  <meta http-equiv="content-language" content="de">
+  <meta name="theme-color" content="rgba(7,25,48,1)" />
+
+  <title>Schieberegler &#151; Symcon :: Automatisierungssoftware</title>
+
+  <link rel="canonical" href="https://www.symcon.de//de/service/dokumentation/komponenten/objekt-darstellung/schieberegler/">
+  <link rel="alternate" hreflang="de" href="https://www.symcon.de//de/service/dokumentation/komponenten/objekt-darstellung/schieberegler/">
+  <link rel="alternate" hreflang="en" href="https://www.symcon.de//en/service/documentation/components/object-presentation/slider/">
+  <link rel="alternate" hreflang="x-default" href="https://www.symcon.de//de/service/dokumentation/komponenten/objekt-darstellung/schieberegler/">
+
+  <!--Favicons-->
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/site.webmanifest">
+  <link rel="mask-icon" href="/assets/favicons/safari-pinned-tab.svg" color="#32c9ac">
+
+
+  <link href="/assets/css/ubuntu-v13-latin.css" rel="stylesheet">
+<link href="/assets/modules/fontawesome-free-5.9.0/css/all.css" rel="stylesheet">
+<link href="/assets/css/output.css" rel="stylesheet">      <link href="/media/plugins/zephir/cookieconsent/index.css" rel="stylesheet">
+
+  <!-- Meta Pixel Code -->
+  <script
+          type="text/plain"
+          data-category="measurement"
+          data-service="Meta Analytics">
+    !function(f, b, e, v, n, t, s) {
+      if (f.fbq) return;
+      n = f.fbq = function() {
+        n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n;
+      n.loaded = !0;
+      n.version = "2.0";
+      n.queue = [];
+      t = b.createElement(e);
+      t.async = !0;
+      t.src = v;
+      s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s);
+    }(window, document, "script",
+      "https://connect.facebook.net/en_US/fbevents.js");
+    fbq("init", "477457067203967"); //Symcon
+    fbq("track", "PageView");
+  </script>
+  <noscript>
+    <img data-category="measurement"
+                 data-service="Meta Analytics" height="1" width="1" style="display:none"
+                 src="https://www.facebook.com/tr?id=477457067203967&ev=PageView&noscript=1"
+    /></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async data-src="https://www.googletagmanager.com/gtag/js?id=UA-33065448-1"
+          type="text/plain"
+          data-category="measurement"
+          data-service="Google Analytics"></script>
+  <script data-category="measurement"
+          type="text/plain"
+          data-service="Google Analytics">
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag("js", new Date());
+
+    gtag("config", "UA-33065448-1");
+
+    (function(i, s, o, g, r, a, m) {
+      i["GoogleAnalyticsObject"] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments);
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m);
+    })(window, document, "script", "https://www.google-analytics.com/analytics.js", "ga");
+
+    ga("create", "UA-33065448-1", "auto");
+    ga("set", "transport", "beacon");
+    ga("send", "pageview");
+  </script>
+  <!-- End gtag.js -->
+
+
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+
+  <header class="sticky top-0 w-full bg-base-color p-0 md:py-2 z-[1001] xl:py-4">
+  <nav class="xl:container relative mx-auto flex items-center">
+    <!--mobile toggle-->
+    <input type="checkbox" id="menu-toggle" class="hidden peer">
+    <!--Icon Container-->
+    <div class="flex justify-between items-center md:py-8 px-6 xl:p-0">
+      <a class="z-20" href="/de/" aria-label="Logo">
+        <svg class="stoke-white fill-white h-6 w-auto"
+             xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 199.16 31.53">
+          <g>
+            <path
+              d="M1.39,30.14V25.39A27.63,27.63,0,0,0,11,27q6.52,0,6.52-4.36,0-3.16-4-3.17H8.7Q0,19.44,0,11.51,0,2.8,12.39,2.79a29.15,29.15,0,0,1,9,1.39V8.94a25.64,25.64,0,0,0-9-1.59q-7.14,0-7.14,4.16c0,2.12,1.15,3.17,3.45,3.17h4.84q9.26,0,9.25,7.93,0,8.92-11.77,8.92A30.88,30.88,0,0,1,1.39,30.14Z"></path>
+            <path d="M29,3h5.65l8,13.66L50.08,3h5.45L45.11,21.42v9.91H39.85V21.42Z"></path>
+            <path
+              d="M63.52,31.33V3H69L78.58,24.5,88,3h5.25V31.33H88.39V11.59L80.71,31.33H76.23L68.38,11.59V31.33Z"></path>
+            <path
+              d="M124.66,30.14a23.26,23.26,0,0,1-8.32,1.39q-15.27,0-15.26-14.77,0-14,15.26-14a23.49,23.49,0,0,1,8.32,1.39V8.94a19.66,19.66,0,0,0-7.92-1.59q-10.21,0-10.21,9.41Q106.53,27,116.74,27a19.82,19.82,0,0,0,7.92-1.58Z"></path>
+            <path d="M173.09,31.33V3h5.25L194.1,23.25V3h5.06V31.33H193.9L178.15,10.64V31.33Z"></path>
+            <path
+              d="M146,31.38h15.76V20.16L163.61,22l3.57-3.57L148.78,0h0l-18.4,18.41L134,22l1.81-1.82V31.38h5.07l0-16.27,8-8,8,8V26.33h-5.5V21H146Z"></path>
+          </g>
+        </svg>
+      </a>
+    </div>
+    <!--Menu-->
+    <!--Toggle Buttons-->
+    <label class="hidden ml-auto py-4 md:py-8 px-6 z-20 peer-checked:flex" for="menu-toggle">
+      <i class="text-white text-2xl fas fa-times"></i>
+    </label>
+    <label class="flex ml-auto py-4 md:py-8 px-6 z-20 peer-checked:hidden xl:hidden" for="menu-toggle">
+      <i class="fas fa-bars text-white text-2xl ml-auto"></i>
+    </label>
+
+    <!--navigation-->
+    <ul
+      class="fixed text-clean-white top-0 z-10 uppercase text-2xl gap-6 opacity-95 flex overflow-hidden w-screen h-0 peer-checked:h-screen bg-accent flex-col justify-center items-center peer-checked:text-primary transition-all duration-300 xl:h-full xl:w-full xl:flex-row xl:relative xl:bg-transparent xl:text-sm xl:justify-end xl:items-center xl:overflow-auto">
+
+      <li class="hover:text-[#23527c] transition-colors duration-300" aria-label="Home">
+        <a  href="/de/">
+          Home        </a>
+      </li>
+
+      <li class="hover:text-[#23527c] transition-colors duration-300">
+        <a           href="/de/produkt/"  aria-label="Produkt">
+          Produkt        </a>
+      </li>
+
+      <li class="hover:text-[#23527c] transition-colors duration-300">
+        <a           href="/de/referenzen/"  aria-label="Referenzen">
+          Referenzen        </a>
+      </li>
+
+      <li class="hover:text-[#23527c] transition-colors duration-300">
+        <a           href="/de/integratoren/"  aria-label="Integratoren">
+          Integratoren        </a>
+      </li>
+
+      <li class="hover:text-[#23527c] transition-colors duration-300">
+        <a           href="/de/downloads/"  aria-label="Downloads">
+          Downloads        </a>
+      </li>
+
+      <li class="hover:text-[#23527c] transition-colors duration-300">
+        <a href="https://community.symcon.de" aria-label="Community">Community</a>
+      </li>
+
+      <li class="hover:text-[#23527c] transition-colors duration-300">
+        <a           href="/de/shop/" aria-label="Shop">
+          Shop        </a>
+      </li>
+
+      <li  class="flex justify-center items-center ">
+        <a href="/de/account/" class="hover:text-[#23527c] py-2 px-4 transition-colors duration-300" title="Persönlicher Bereich">
+          <i class="fas fa-user text-base"></i>
+        </a>
+        <a href="/de/service/dokumentation/einfuehrung/"
+           class="hover:text-[#23527c] py-2 px-4 transition-colors duration-300"
+           title="Dokumentation">
+          <i class="fas fa-book text-base"></i>
+        </a>
+        <button onclick="handleSearchFieldToggle()" id="search-field-toggle-button"
+                class="py-2 px-4 transition-colors duration-300" title="Suche">
+          <i id="header-search-button"
+             class="fas fa-search text-base hover:text-[#23527c] transition-colors duration-300"></i>
+        </button>
+      </li>
+
+    </ul>
+    <form id="searchform" class="relative md:absolute md:right-0 md:top-full hidden opacity-0 transition-opacity duration-300"
+          action="//community.symcon.de/search" method="GET">
+      <input type="search" id="searchfield" value="" name="q" placeholder="Suche...">
+      <span
+        class="fas fa-times absolute right-0 p-4 top-0 h-full z-10 flex justify-center items-center text-red-400 hover:text-red-500 cursor-pointer"
+        onclick="handleSearchFieldToggle()">
+              <i id="search-close "></i>
+      </span>
+    </form>
+    <script>
+
+      let searchForm = document.getElementById("searchform")
+      let searchFieldToggleButton = document.getElementById("search-field-toggle-button")
+      let searchFiledToggleStore = false;
+      let handleSearchFieldToggle = () => {
+        console.log("toggle")
+
+        if (searchFiledToggleStore) {
+          searchForm.classList.remove("opacity-100")
+          searchForm.classList.add("opacity-0")
+          searchFieldToggleButton.classList.remove("bg-accent")
+          document.getElementById("searchfield").value = "";
+          setTimeout(() => {
+            searchForm.classList.add("hidden")
+          }, 300)
+        } else {
+          searchForm.classList.remove("hidden")
+          setTimeout(() => {
+            searchForm.classList.add("opacity-100")
+            searchForm.classList.remove("opacity-0")
+            searchFieldToggleButton.classList.add("bg-accent")
+            document.getElementById("searchfield").focus();
+          }, 10)
+        }
+        searchFiledToggleStore = !searchFiledToggleStore;
+      }
+
+    </script>
+  </nav>
+
+
+</header>
+
+  <main class="container mx-auto  max-md:p-2">
+
+  <div class="fixed hidden top-0 left-0 right-0 bottom-0 justify-center items-center bg-[rgba(0,0,0,.7)]"
+     id="feedback-modal">
+
+  <div class="max-w-md flex flex-col gap-4 bg-white p-4">
+    <h1 class="text-4xl text-base-color-2 uppercase">Was können wir verbessern?</h1>
+    <div class="feedback-content flex flex-col flex flex-col gap-2 p-4">
+      <input type="text" id="feedback-name" class="form-control" placeholder="Ihr Name (erforderlich)">
+      <input id="feedback-subject" class="form-control" type="text" placeholder="Betreff (erforderlich)">
+      <textarea id="feedback-message" class="form-control" placeholder="Ihre Nachricht" cols="50"
+                rows="10"></textarea>
+      <input id="feedback-email" type="email" class="form-control !max-w-full w-full"
+             placeholder="Ihre E-Mail-Adresse (für Rückfragen)">
+      <div class="flex justify-center items-center">
+        <div id="feedback-text" class="text-red-500 font-bold"></div>
+
+      <button onclick="modal.submit();" id="feedback-submit" class=" max-w-full w-36 h-12 ml-auto btn btn-primary"
+              type="submit">Absenden</button>
+      <button id="feedback-loading" class="btn btn-primary ml-auto max-w-full w-36 h-12" style="display: none;"
+              type="submit"><i class="fas fa-spinner animate-spin text-3xl"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<header class="py-16 flex w-full justify-between">
+  <div class="flex flex-col gap-8">
+    <p class="h-4"><a id="doku-back-link" class="text-accent" href="/produkt">« Zurück zu Produkt </a></p>
+    <h1 class="text-4xl uppercase font-bold">Dokumentation</h1>
+  </div>
+  <div class="mt-auto flex gap-2 text-sm  max-md:hidden">
+    <a id="edit-button" href="javascript:editPage();" class="hidden text-[#aaa] transition-colors duration-300 hover:text-white">(Bearbeiten)</a>
+    <a href="javascript:modal.open();"
+       class="text-[#aaa] transition-colors duration-300 hover:text-white ">Feedback senden!</a>
+  </div>
+</header>
+
+<script data-cookiecategory="necessary">
+
+
+  String.prototype.isBlank = function () {
+    return (this.trim() === "");
+  }
+
+  class ModalForm {
+    feedbackSent = false;
+    modalElement;
+    feedbackEmail;
+    feedbackName;
+
+    constructor(element) {
+      this.modalElement = document.getElementById(element);
+      this.feedbackEmail = localStorage.getItem('feedback_email');
+      this.feedbackName = localStorage.getItem('feedback_name');
+
+      if (this.feedbackEmail != null) {
+        document.getElementById('feedback-email').value = this.feedbackEmail;
+      }
+      if (this.feedbackName != null) {
+        document.getElementById('feedback-name').value = this.feedbackName;
+      }
+
+      this.modalElement.addEventListener('click', (e) => {
+        if (e.target.id === element) {
+          this.save();
+        }
+      });
+    }
+
+
+    open() {
+      document.getElementById('feedback-modal').classList.add('flex', "z-[1000]");
+      document.getElementById('feedback-modal').classList.remove('hidden');
+    }
+
+
+    save(){
+      localStorage.setItem('feedback_email', document.getElementById('feedback-email').value.trim());
+      localStorage.setItem('feedback_name', document.getElementById('feedback-name').value.trim());
+      localStorage.setItem('feedback_subject', document.getElementById('feedback-subject').value.trim());
+      localStorage.setItem('feedback_message', document.getElementById('feedback-message').value.trim());
+      this.close();
+    }
+
+    saveClear(){
+      localStorage.removeItem("feedback_subject");
+      localStorage.removeItem("feedback_message");
+      document.getElementById('feedback-subject').value = "";
+      document.getElementById('feedback-message').value = "";
+    }
+
+    close() {
+      document.getElementById('feedback-modal').classList.remove('flex', "z-[1000]");
+      document.getElementById('feedback-modal').classList.add('hidden');
+    }
+
+    submit() {
+      if(this.feedbackSent){
+        this.close();
+        return;
+      }
+
+      let emailReg = /^([\w+-\.]+@([\w-]+\.)+[\w-]{2,64})?$/
+      let name = document.getElementById('feedback-name').value.trim();
+      let subject = document.getElementById('feedback-subject').value.trim();
+      let message = document.getElementById('feedback-message').value.trim()
+      let email = document.getElementById('feedback-email').value.trim();
+
+      /*clear feedback text*/
+      document.getElementById('feedback-text').innerHTML = "";
+
+      if(name.isBlank()){
+        document.getElementById('feedback-text').innerHTML = "Kein Name";
+        return;
+      }
+
+      if (subject.isBlank()) {
+        document.getElementById('feedback-text').innerHTML = "Kein Betreff";
+        return;
+      }
+
+      if (email.isBlank()||!emailReg.test(email)) {
+        document.getElementById('feedback-text').innerHTML = "Ungültige E-Mail-Adresse";
+        return;
+      }
+
+      localStorage.setItem('feedback_name', name);
+      localStorage.setItem('feedback_email', email);
+
+
+      document.getElementById('feedback-submit').style.display = "none";
+      document.getElementById('feedback-loading').style.display = "flex";
+
+      /*send feedback*/
+      this.feedbackSent = true;
+
+      let url = "https://support.symcon.de/feedback?name=" + encodeURIComponent(name) + "&email=" + encodeURIComponent(email) + "&subject=" + encodeURIComponent(subject) + "&message=" + encodeURIComponent(message) + "&url=" + encodeURIComponent("https://www.symcon.de" + "/de/service/dokumentation/komponenten/objekt-darstellung/schieberegler");
+
+      fetch(url, {
+        method: "POST"
+      })
+        .then((response)=> {
+          document.getElementById('feedback-loading').style.display = "none";
+          document.getElementById('feedback-submit').style.display = "flex";
+          return response.text();
+        })
+        .then((text)=> {
+          if (text === '"OK"') {
+            document.getElementById('feedback-submit').style.backgroundColor = "#32c9ac";
+            document.getElementById('feedback-submit').style.borderColor = "#32c9ac";
+            document.getElementById('feedback-submit').innerText = "Erfolgreich!";
+
+
+            setTimeout(()=> {
+              this.feedbackSent = false;
+              modal.saveClear();
+              modal.close();
+            }, 5000);
+
+          } else {
+            document.getElementById('feedback-submit').removeAttribute('disabled');
+            document.getElementById('feedback-submit').style.backgroundColor = "#b51c1c";
+            document.getElementById('feedback-submit').style.borderColor = "#b51c1c";
+            document.getElementById('feedback-submit').innerText = "Erneut versuchen";
+          }
+        })
+        .catch(()=> {
+          document.getElementById('feedback-submit').removeAttribute('disabled');
+          document.getElementById('feedback-submit').style.backgroundColor = "#b51c1c";
+          document.getElementById('feedback-submit').style.borderColor = "#b51c1c";
+          document.getElementById('feedback-submit').innerText = "Erneut versuchen";
+        })
+    }
+
+  }
+
+  function editPage() {
+    if (window.location.href.includes('localhost') === true) {
+      window.open('/panel/pages/service+dokumentation+komponenten+objekt-darstellung+schieberegler');
+    } else {
+      let path = "service/dokumentation/6_komponenten/7_objekt-darstellung/schieberegler" + "/" + "doku-default" + "." + "de" + ".txt";
+      window.open(('https://github.com/symcon/site/edit/master/content/' + path).replace(new RegExp('\/' + '$'), '.txt'));
+    }
+  }
+
+
+  let modal = new ModalForm('feedback-modal');
+
+
+  /*enable github editing with special keyboard shortcut*/
+  window.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.shiftKey && event.altKey && event.code === "KeyN") {
+      try {
+        localStorage.setItem('github-edit', '1');
+        document.getElementById('edit-button').style.display = 'block';
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    try {
+      if (localStorage.getItem('github-edit') === '1') {
+        document.getElementById('edit-button').style.display = 'block';
+      }
+    } catch {
+      console.log(e)
+    }
+  })
+
+</script>
+<script data-cookiecategory="measurement">
+  document.addEventListener("DOMContentLoaded", () => {
+    const refURL = document.referrer;
+    const backLink = document.getElementById('doku-back-link');
+    let specialSites = (refURL.indexOf('amplifyapp.com') === -1 || refURL.indexOf('localhost:8000') === -1 || refURL.indexOf('symcon.de') === -1);
+    if (refURL === '' || !specialSites) {
+      //user comes from an external page or inputted page directly, don't show back link
+      backLink.style.display = 'none';
+    } else if (refURL.indexOf('documentation') !== -1 || refURL.indexOf('dokumentation') !== -1) {
+      //user comes from a doku page, don't show back link
+      backLink.style.display = 'none';
+    } else if (refURL.indexOf('forum') !== -1) {
+      //user comes from the community forum, show back link
+      backLink.innerText = "Zurück zum Forum";
+      backLink.setAttribute('href', refURL);
+      backLink.style.display = 'block';
+    } else {
+      //user comes from some other symcon page, we show the link with a correct name
+      backLink.setAttribute('href', refURL);
+      backLink.style.display = 'none';
+      //request page title
+      const Http = new XMLHttpRequest();
+      Http.open("GET", refURL);
+      Http.send();
+      Http.onreadystatechange = function (e) {
+        if (e.target.responseText.match(/<title[^>]*>(.*?)<\/title>/g)) {
+          //search global
+          let title = e.target.responseText.match(/<title[^>]*>(.*?)<\/title>/g)[0];
+          //search local
+          title = title.match(/<title[^>]*>(.*?)<\/title>/)[1];
+          title = title.substring(0, title.indexOf(' &#151; ' + "Symcon :: Automatisierungssoftware"));
+          backLink.innerText = "Zurück zu  " + title;
+          backLink.style.display = 'block';
+        }
+      }
+    }
+  })
+</script>
+  <section class="md:grid md:grid-cols-3">
+
+    <label for="mobile-doku-nav"
+           class="md:hidden w-12 h-12 bg-accent fixed left-2 bottom-2 flex justify-center items-center cursor-pointer z-[1003] group">
+      <i class="fas fa-bars text-white text-2xl"></i>
+    </label>
+    <input id="mobile-doku-nav" class="peer hidden" type="checkbox"></input>
+    <!--Getting correct site children and passing them along-->
+    <nav
+      class="max-md:max-w-0 max-md:overflow-x-hidden max-md:overflow-y-scroll max-md:fixed max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-[1002] max-md:peer-checked:max-w-xs max-md:w-full max-md:transition-all max-md:duration-500 max-md:bg-base-color-2 max-md:peer-checked:px-4 max-md:py-4 max-md:text-sm max-md:whitespace-nowrap">
+            
+<ul class="pb-2 flex flex-col overflow-hidden transition-all duration-300 gap-2 pb-4 font-medium">
+    <li class="flex flex-col gap-2 sub ">
+    <a class=" uppercase    "
+      href="/de/service/dokumentation/einfuehrung/">Einf&uuml;hrung</a>
+      </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class=" uppercase    "
+      href="/de/service/dokumentation/installation/">Installation</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class=" uppercase    "
+      href="/de/service/dokumentation/sicherheit/">Sicherheit</a>
+      </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class=" uppercase    "
+      href="/de/service/dokumentation/datensicherung/">Datensicherung</a>
+      </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class=" uppercase    "
+      href="/de/service/dokumentation/grundlagen/">Grundlagen</a>
+      </li>
+    <li class="flex flex-col gap-2 sub active">
+    <a class=" uppercase    text-accent font-bold"
+      href="/de/service/dokumentation/komponenten/">Komponenten</a>
+    
+<ul class="pb-2 flex flex-col overflow-hidden transition-all duration-300 gap-2 pl-4 font-normal">
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/fernzugriff/">Fernzugriff</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/tray/">Tray</a>
+      </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/dienst/">Dienst</a>
+      </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/verwaltungskonsole/">Verwaltungskonsole</a>
+      </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/kachel-visualisierung/">Kachel Visualisierung</a>
+      </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/webfront-visualisierung/">WebFront Visualisierung</a>
+      </li>
+    <li class="flex flex-col gap-2 sub active">
+    <a class="    text-accent font-bold"
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/">Objekt-Darstellung</a>
+    
+<ul class="pb-2 flex flex-col overflow-hidden transition-all duration-300 gap-2 pl-4 font-normal">
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/aufzaehlung/">Aufz&auml;hlung</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/ausgeloestes-ereignis/">Ausgel&ouml;stes Ereignis</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/automation/">Automation</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/bild/">Bild</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/datumunduhrzeitanzeige/">Datum/Uhrzeit</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/dauer/">Dauer</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/diagramm/">Diagramm</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/dokument/">Dokument</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/einzelnes-element/">Einzelnes Element</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/energie-manager/">Energie Manager</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/energieverteilung/">Energieverteilung</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/farbe/">Farbe</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/inhaltswechsler/">Inhaltswechsler</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/ipsview/">IPSView</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/kategorie/">Kategorie</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/kategorieleiste/">Kategorieleiste</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/legacy-profil/">Legacy Profil</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/licht/">Licht</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/liste/">Liste</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/media-player/">Media Player</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/mitteilungen/">Mitteilungen</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/popup/">Popup</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/jalousie/">Rollladen</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/schalter/">Schalter</a>
+      </li>
+    <li class="flex flex-col gap-2 normal active">
+    <a class="    text-accent font-bold"
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/schieberegler/">Schieberegler</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/stream/">Stream</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/szenen/">Szenen</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/thermostat/">Thermostat</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/ton/">Ton</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/webinhalt/">Webinhalt</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/wertanzeige/">Wertanzeige</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/werteingabe/">Werteingabe</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/wochenplan/">Wochenplan</a>
+      </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/objekt-darstellung/zyklisches-ereignis/">Zyklisches Ereignis</a>
+      </li>
+  </ul>  </li>
+    <li class="flex flex-col gap-2 normal ">
+    <a class="    "
+      href="/de/service/dokumentation/komponenten/icons/">Icons</a>
+      </li>
+  </ul>  </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class=" uppercase    "
+      href="/de/service/dokumentation/vorgehensweisen/">Vorgehensweisen</a>
+      </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class=" uppercase    "
+      href="/de/service/dokumentation/modulreferenz/">Modulreferenz</a>
+      </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class=" uppercase    "
+      href="/de/service/dokumentation/befehlsreferenz/">Befehlsreferenz</a>
+      </li>
+    <li class="flex flex-col gap-2 sub ">
+    <a class=" uppercase    "
+      href="/de/service/dokumentation/entwicklerbereich/">Entwicklerbereich</a>
+      </li>
+  </ul>    </nav>
+
+    <main class="col-span-2 pb-32 prose text-white max-w-full">
+      <h1 class="text-3xl font-bold">Schieberegler</h1>
+      
+
+<p>Bei einem Schieberegler kann ein Wert eingestellt werden.</p>
+<h4><span id="Voraussetzungen">Voraussetzungen</span></h4>
+<p>Ein Schieberegler ist eine <a href="/de/service/dokumentation/grundlagen/variablen">Variable</a> mit der <a href="/de/service/dokumentation/grundlagen/variablen/variablendarstellung">Darstellung</a> Schieberegler. Um diese Darstellung zu verwenden muss die Variable folgende Bedingungen erfüllen:</p>
+<ul>
+<li>Typ Integer oder Float</li>
+<li>Eingerichtete <a href="/de/service/dokumentation/grundlagen/variablen/variablenaktionen">Variablenaktion</a></li>
+</ul>
+<h4>Parameter</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Minimaler Wert</td>
+<td>Minimaler Wert des Schiebereglers</td>
+</tr>
+<tr>
+<td>Maximaler Wert</td>
+<td>Maximaler Wert des Schiebereglers</td>
+</tr>
+<tr>
+<td>Schrittweite</td>
+<td>Größe eines einzelnen Schrittes im Schieberegler. Bei 0 hat der Schieberegler keine feste Schrittweite.</td>
+</tr>
+<tr>
+<td>Gradient</td>
+<td>Definiert die Optik des Gradienten</td>
+</tr>
+<tr>
+<td>Benutzerdefinierter Gradient</td>
+<td>In der Liste können für spezifische Werte Farben ausgewählt werden. Der Gradient des Schiebereglers besteht dann aus einem Verlauf über die definierten Farben. (nur sichtbar und verwendbar falls Gradient = "Benutzerdefiniert")</td>
+</tr>
+<tr>
+<td>Verwendung der Variable</td>
+<td>Verwendung der Variable in zusammengefassten Darstellungen. Der Wert wirkt sich nicht direkt auf die Darstellung der Variable auf, sondern nur auf deren Verwendung in zusammengefassten Darstellungen.</td>
+</tr>
+<tr>
+<td>Präfix</td>
+<td>Wird bei Formatierung vor den Variablenwert geschrieben</td>
+</tr>
+<tr>
+<td>Suffix</td>
+<td>Wird bei Formatierung hinter den Variablenwert geschrieben</td>
+</tr>
+<tr>
+<td>Anzeigetyp</td>
+<td>Bei "Prozentual" werden die Werte prozentual dargestellt. Somit wird der Minimalwert als 0 und der Maximalwert als 100 dargestellt, unabhängig von deren absoluten Werten. Andere Werte werden ebenfalls dementsprechend skaliert. Bei "Absolut" erfolgt keine Umrechnung.</td>
+</tr>
+<tr>
+<td>Tausendertrennzeichen</td>
+<td>Definiert das verwendete Tausendertrennzeichen bei Formatierung des Wertes</td>
+</tr>
+<tr>
+<td>Nachkommastellen</td>
+<td>Die Anzahl der Nachkommastellen, welche bei Formatierung des Wertes dargestellt werden (nur verfügbar für Variablen des Typs Float)</td>
+</tr>
+<tr>
+<td>Dezimaltrennzeichen</td>
+<td>Definiert das verwendete Dezimaltrennzeichen bei Formatierung des Wertes (nur verfügbar für Variablen des Typs Float)</td>
+</tr>
+<tr>
+<td>Icon</td>
+<td>Das <a href="/de/service/dokumentation/komponenten/icons">Icon</a>, welches für die Variable verwendet wird</td>
+</tr>
+<tr>
+<td>Verwende aktualisierte Parameter für spezifische Intervalle</td>
+<td>Aktiviert eine Liste von Intervallen, welche die Formatierung in spezifischen Wertbereichen überschreiben können (nicht verwendbar falls Anzeigetyp = "Prozentual")</td>
+</tr>
+<tr>
+<td>Intervalle</td>
+<td>Eine Liste von Intervallen zum Überschreiben der Formatierung in spezifischen Wertbereichen</td>
+</tr>
+</tbody>
+</table>
+<h5>Intervalle</h5>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Anfang des Intervalls</td>
+<td>Ab diesem Wert wird das Intervall angewandt</td>
+</tr>
+<tr>
+<td>Ende des Intervalls</td>
+<td>Bis zu diesem Wert wird das Intervall angewandt. Sollte es ein Intervall mit Anfang auf diesem Wert geben, so wird bei dem exakten Wert für Ende das andere Intervall verwendet und das definierte Intervall nur für Werte genutzt, welche kleiner als das Ende sind.</td>
+</tr>
+<tr>
+<td>Anzeige</td>
+<td>Bei "Formatierter Wert" wird der Wert mit angepassten Parametern formatiert, bei "Konstante" wird die Darstellung durch einen konstanten Wert ersetzt</td>
+</tr>
+<tr>
+<td>Konstante</td>
+<td>Definiert den Text, welcher ohne weitere Formatierung für Werte innerhalb dieses Intervalls dargestellt werden soll. (nur verfügbar falls Anzeige = "Konstante")</td>
+</tr>
+<tr>
+<td>Umrechnungsfaktor</td>
+<td>Vor der Formatierung wird der Wert durch den Umrechnungsfaktor geteilt (nur verfügbar falls Anzeige = "Formatierter Wert")</td>
+</tr>
+<tr>
+<td>Überschreibe Präfix</td>
+<td>Ist der Schalter aktiviert wird nicht der Präfix der Hauptkonfiguration verwendet, sondern der im Intervall definierte Präfix (nur verfügbar falls Anzeige = "Formatierter Wert")</td>
+</tr>
+<tr>
+<td>Präfix</td>
+<td>Verwendeter Präfix innerhalb des Intervalls (nur verfügbar falls Schalter "Überschreibe Präfix" aktiv)</td>
+</tr>
+<tr>
+<td>Überschreibe Suffix</td>
+<td>Ist der Schalter aktiviert wird nicht der Suffix der Hauptkonfiguration verwendet, sondern der im Intervall definierte Suffix (nur verfügbar falls Anzeige = "Formatierter Wert")</td>
+</tr>
+<tr>
+<td>Suffix</td>
+<td>Verwendeter Suffix innerhalb des Intervalls (nur verfügbar falls Schalter "Überschreibe Suffix" aktiv)</td>
+</tr>
+<tr>
+<td>Überschreibe Nachkommastellen</td>
+<td>Ist der Schalter aktiviert werden nicht die Nachkommastellen der Hauptkonfiguration verwendet, sondern die im Intervall definierten Nachkommastellen (nur verfügbar falls Anzeige = "Formatierter Wert")</td>
+</tr>
+<tr>
+<td>Nachkommastellen</td>
+<td>Verwendete Nachkommastellen innerhalb des Intervalls (nur verfügbar falls Schalter "Überschreibe Nachkommastellen" aktiv)</td>
+</tr>
+<tr>
+<td>Überschreibe Icon</td>
+<td>Ist der Schalter aktiviert wird nicht das Icon der Hauptkonfiguration verwendet, sondern das im Intervall definierte Icon</td>
+</tr>
+<tr>
+<td>Icon</td>
+<td>Verwendetes Icon innerhalb des Intervalls (nur verfügbar falls Schalter "Überschreibe Icon" aktiv)</td>
+</tr>
+</tbody>
+</table>
+<h3>Darstellung als Legacy-Profil</h3>
+<p>Verwendet eine Variable die Darstellung <a href="/de/service/dokumentation/komponenten/objekt-darstellung/legacy-profil">Legacy Profil</a>, so wird diese als Schieberegler darstellt, falls sie zusätzlich folgende Bedingungen erfüllt:</p>
+<ul>
+<li>Erfüllt nicht die Bedingungen von einer der folgenden Darstellungen:<ul>
+<li><a href="/de/service/dokumentation/komponenten/objekt-darstellung/jalousie" title="Jalousie">Jalousie</a></li>
+<li><a href="/de/service/dokumentation/komponenten/objekt-darstellung/aufzaehlung" title="Aufz&auml;hlung">Aufz&auml;hlung</a></li>
+</ul>
+</li>
+<li><a href="/de/service/dokumentation/grundlagen/variablen/variablenprofile">Variablenprofil</a> mit folgenden Parametern: <ul>
+<li>Max Wert &gt; Min Wert</li>
+<li>Schrittweite beliebig, hat aber Einfluss auf die Schrittweite des Sliders</li>
+</ul>
+</li>
+</ul>
+<p>Bei der Verwendung eines Variablenprofils werden einige Parameter des Schiebereglers abgeleitet</p>
+<h4>Gradient</h4>
+<p>Der Gradient hängt vom Profilnamen ab.</p>
+<ul>
+<li>Temparatur für Profilnamen<ul>
+<li>~Temperature</li>
+<li>~Temperature.Difference</li>
+<li>~Temperature.Fahrenheit</li>
+<li>~Temperature.Room</li>
+</ul>
+</li>
+<li>Farbtemperatur für Profilnamen "~TWColor"</li>
+<li>Standard sonst</li>
+</ul>
+<h4>Verwendung der Variablen</h4>
+<p>Die Verwendung hängt vom Profilnamen ab.</p>
+<ul>
+<li>Temparatur für Profilnamen<ul>
+<li>~Temperature</li>
+<li>~Temperature.Difference</li>
+<li>~Temperature.Fahrenheit</li>
+<li>~Temperature.Room</li>
+</ul>
+</li>
+<li>Farbtemperatur für Profilnamen "~TWColor"</li>
+<li>Intensität falls Profilname mit "~Intensity." beginnt</li>
+<li>Lautstärke für Profilnamen "~Volume"</li>
+<li>Fortschritt für Profilnamen "~Progress"</li>
+<li>Keine hiervon sonst</li>
+</ul>
+<h4>Anzeigetyp</h4>
+<p>"Prozentual" falls Suffix "%", sonst "Absolut"</p>
+<h3>Aussehen in Kachel Visualisierung</h3>
+<h4>Als eigene Kachel</h4>
+<figure class="imageblock"><img alt="Slider in Kachel" src="/media/pages/service/dokumentation/komponenten/objekt-darstellung/schieberegler/be7b9f85a5-1794558619/objektdarstellung-slider-kachel.png"></figure>
+<h4>Innerhalb einer Liste</h4>
+<figure class="imageblock"><img alt="Slider in Liste" src="/media/pages/service/dokumentation/komponenten/objekt-darstellung/schieberegler/0bcf4db21e-1794558619/objektdarstellung-slider-liste.png"></figure>
+<h3>Aussehen im WebFront</h3>
+<p>Das WebFront unterscheidet je nach Anzeigetyp und hat für jeden Fall eine eigene Darstellung:</p>
+<h4>Anzeigetyp "Absolut"</h4>
+<figure class="imageblock"><img alt="Slider im WebFront mit normalem Profil" src="/media/pages/service/dokumentation/komponenten/objekt-darstellung/schieberegler/eb37f043ef-1794558619/objektdarstellung-slider-webfront-normal.png"></figure>
+<h4>Anzeigetyp "Prozentual"</h4>
+<figure class="imageblock"><img alt="Slider im WebFront mit Prozent-Profil" src="/media/pages/service/dokumentation/komponenten/objekt-darstellung/schieberegler/3aaca23165-1794558619/objektdarstellung-slider-webfront-prozent.png"></figure>
+      </main>
+  </section>
+
+  <!--What does this do?-->
+</main>
+
+<div id="anchor-link-snackbar" role="status" aria-live="polite"
+     class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[1004] w-max max-w-[calc(100vw-8rem)] px-4 py-2 text-sm text-center bg-accent text-base-color shadow opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+
+<script>
+  /* select all h3,h4,h5 tags that have an anchor id (set on the first child span via the anker KirbyTag) and add a link icon to copy the anchor URL to clipboard */
+
+  const snackbar = document.getElementById("anchor-link-snackbar");
+  const copiedText = "Link in die Zwischenablage kopiert";
+  let snackbarTimeout;
+
+  function showSnackbar(text) {
+    snackbar.textContent = text;
+    snackbar.classList.remove("opacity-0");
+    clearTimeout(snackbarTimeout);
+    snackbarTimeout = setTimeout(() => snackbar.classList.add("opacity-0"), 2000);
+  }
+
+  document.querySelectorAll("h3,h4,h5").forEach((item) => {
+    const id = item.querySelector("span[id]")?.id;
+    if (!id) return;
+
+    item.classList.add("group", "flex", "items-center");
+
+    item.insertAdjacentHTML("beforeend", `<span data-link class="cursor-pointer text-sm icon hidden group-hover:flex"><i class='ml-2 fas fa-link text-accent cursor-pointer'></i></span>`);
+
+    item.querySelector("span[data-link]").addEventListener("click", (e) => {
+      navigator.clipboard.writeText(window.location.href.split("#")[0] + "#" + id)
+        .then(() => showSnackbar(copiedText));
+    });
+  });
+</script>
+  
+<section id="footer" class="flex justify-center items-center bg-white p-6 lg:p-24 mt-auto justify-self-end footer">
+	<footer class="container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-8 font-smibold">
+		<div class="xl:col-span-3">
+			<svg id="symcon-logo-komplett" xmlns="http://www.w3.org/2000/svg" width="201.75" height="50.43"
+				viewBox="0 0 201.75 50.43">
+				<g>
+					<path class="cls-1symcon-komplett"
+						d="M1.39,30.14V25.39A27.63,27.63,0,0,0,11,27q6.52,0,6.52-4.36,0-3.16-4-3.17H8.7Q0,19.44,0,11.51,0,2.8,12.39,2.79a29.15,29.15,0,0,1,9,1.39V8.94a25.64,25.64,0,0,0-9-1.59q-7.14,0-7.14,4.16c0,2.12,1.15,3.17,3.45,3.17h4.84q9.26,0,9.25,7.93,0,8.92-11.77,8.92A30.88,30.88,0,0,1,1.39,30.14Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M29,3h5.65l8,13.66L50.08,3h5.45L45.11,21.42v9.91H39.85V21.42Z"></path>
+					<path class="cls-1symcon-komplett"
+						d="M63.52,31.33V3H69L78.58,24.5,88,3h5.25V31.33H88.39V11.59L80.71,31.33H76.23L68.38,11.59V31.33Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M124.66,30.14a23.26,23.26,0,0,1-8.32,1.39q-15.27,0-15.26-14.77,0-14,15.26-14a23.49,23.49,0,0,1,8.32,1.39V8.94a19.66,19.66,0,0,0-7.92-1.59q-10.21,0-10.21,9.41Q106.53,27,116.74,27a19.82,19.82,0,0,0,7.92-1.58Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M173.09,31.33V3h5.25L194.1,23.25V3h5.06V31.33H193.9L178.15,10.64V31.33Z"></path>
+					<path class="cls-1symcon-komplett"
+						d="M146,31.38h15.76V20.16L163.61,22l3.57-3.57L148.78,0h0l-18.4,18.41L134,22l1.81-1.82V31.38h5.07l0-16.27,8-8,8,8V26.33h-5.5V21H146Z">
+					</path>
+				</g>
+				<polygon class="cls-1symcon-komplett" points="6 48.59 53.22 48.59 53.22 43.39 0 43.39 6 48.59">
+				</polygon>
+				<g>
+					<path class="cls-1symcon-komplett"
+						d="M65.89,50.36,70,40.75h1.92l4.17,9.61H74.14l-1.21-2.62H69.85l.62-1.54h2l-1.57-3.61-3.17,7.77Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M83.62,43.3v7.06H82.23l-.22-.9a4.49,4.49,0,0,1-2.58.9c-1.62,0-2.43-.87-2.43-2.63V43.3h1.78v4.45a1,1,0,0,0,1.15,1.17A2.84,2.84,0,0,0,81.84,48V43.3Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M85.23,42.16h1.32l.26,1.14h1.64v1.42H87V48c0,.66.28,1,.85,1h.59v1.41H87c-1.18,0-1.77-.63-1.77-1.9Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M89.29,46.83q0-3.59,3.56-3.59t3.57,3.59c0,2.4-1.19,3.59-3.57,3.59S89.3,49.23,89.29,46.83ZM92.85,49c1.19,0,1.79-.74,1.79-2.21s-.6-2.16-1.79-2.16-1.78.72-1.78,2.16S91.67,49,92.85,49Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M97.59,50.36V43.3H99l.21.89a4.09,4.09,0,0,1,2.41-.89,2,2,0,0,1,1.89,1,4.45,4.45,0,0,1,2.53-1c1.49,0,2.24.9,2.24,2.69v4.37h-1.79V45.92c0-.78-.33-1.18-1-1.18a2.41,2.41,0,0,0-1.66.92v4.7H102V45.94c0-.8-.33-1.2-1-1.2a2.32,2.32,0,0,0-1.68.92v4.7Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M109.52,48.16c0-1.44,1-2.17,3.06-2.17a8.8,8.8,0,0,1,1.64.14v-.47c0-.63-.61-.94-1.83-.94a8.25,8.25,0,0,0-2.3.33V43.64a8.26,8.26,0,0,1,2.3-.34c2.41,0,3.62.78,3.62,2.33v4.73h-.9l-.77-.49a4.1,4.1,0,0,1-2,.49C110.47,50.36,109.52,49.63,109.52,48.16Zm3.06-.82c-.85,0-1.28.27-1.28.8s.36.81,1.08.81a3,3,0,0,0,1.84-.55v-.93A8.43,8.43,0,0,0,112.58,47.34Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M117.62,42.16h1.32l.26,1.14h1.64v1.42H119.4V48c0,.66.28,1,.85,1h.59v1.41h-1.45c-1.18,0-1.77-.63-1.77-1.9Z">
+					</path>
+					<path class="cls-1symcon-komplett" d="M123.9,40.75v1.41h-1.78V40.75Zm0,2.55v7.06h-1.78V43.3Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M125.07,46.83q0-3.59,3.57-3.59t3.56,3.59c0,2.4-1.19,3.59-3.56,3.59S125.08,49.23,125.07,46.83ZM128.64,49c1.18,0,1.78-.74,1.78-2.21s-.6-2.16-1.78-2.16-1.78.72-1.78,2.16S127.45,49,128.64,49Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M133.37,50.36V43.3h1.38l.22.91a4.5,4.5,0,0,1,2.58-.91c1.63,0,2.44.88,2.44,2.63v4.43h-1.78V45.91a1,1,0,0,0-1.16-1.17,2.84,2.84,0,0,0-1.9.9v4.72Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M144.19,50V48.35a9.5,9.5,0,0,0,3.27.53c1.47,0,2.21-.49,2.21-1.47,0-.72-.45-1.08-1.36-1.08h-1.64c-2,0-2.95-.9-2.95-2.69q0-3,4.2-3a9.9,9.9,0,0,1,3.06.47v1.62a8.64,8.64,0,0,0-3.06-.54c-1.61,0-2.42.47-2.42,1.41q0,1.08,1.17,1.08h1.64c2.09,0,3.14.89,3.14,2.69q0,3-4,3A10.62,10.62,0,0,1,144.19,50Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M152.19,46.83c0-2.39,1.18-3.59,3.56-3.59s3.56,1.2,3.56,3.59-1.19,3.59-3.56,3.59S152.2,49.23,152.19,46.83ZM155.75,49c1.19,0,1.78-.74,1.78-2.21s-.59-2.16-1.78-2.16-1.78.72-1.78,2.16S154.56,49,155.75,49Z">
+					</path>
+					<path class="cls-1symcon-komplett" d="M162.27,40.75v9.61h-1.78V40.75Z"></path>
+					<path class="cls-1symcon-komplett"
+						d="M170.5,43.3v7.06h-1.39l-.22-.9a4.44,4.44,0,0,1-2.58.9c-1.62,0-2.43-.87-2.43-2.63V43.3h1.78v4.45a1,1,0,0,0,1.16,1.17,2.84,2.84,0,0,0,1.9-.89V43.3Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M172.11,42.16h1.32l.27,1.14h1.64v1.42h-1.45V48c0,.66.29,1,.86,1h.59v1.41h-1.46c-1.18,0-1.77-.63-1.77-1.9Z">
+					</path>
+					<path class="cls-1symcon-komplett" d="M178.39,40.75v1.41h-1.78V40.75Zm0,2.55v7.06h-1.78V43.3Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M179.57,46.83q0-3.59,3.56-3.59c2.38,0,3.56,1.2,3.56,3.59s-1.18,3.59-3.56,3.59S179.58,49.23,179.57,46.83ZM183.13,49c1.19,0,1.78-.74,1.78-2.21s-.59-2.16-1.78-2.16-1.78.72-1.78,2.16S181.94,49,183.13,49Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M187.87,50.36V43.3h1.37l.23.91a4.46,4.46,0,0,1,2.58-.91c1.62,0,2.44.88,2.44,2.63v4.43h-1.78V45.91a1,1,0,0,0-1.17-1.17,2.81,2.81,0,0,0-1.89.9v4.72Z">
+					</path>
+					<path class="cls-1symcon-komplett"
+						d="M196.1,50V48.55a7.33,7.33,0,0,0,2.71.47c.77,0,1.15-.25,1.15-.74s-.25-.67-.77-.67h-1.28a1.9,1.9,0,0,1-2.15-2.15c0-1.48,1.05-2.22,3.14-2.22a7.68,7.68,0,0,1,2.51.4v1.48a6.92,6.92,0,0,0-2.55-.47c-1,0-1.45.25-1.45.74s.28.67.84.67h1.14c1.57,0,2.36.72,2.36,2.15s-1,2.22-3,2.22A8.38,8.38,0,0,1,196.1,50Z">
+					</path>
+				</g>
+			</svg>
+			<p class="pt-5">
+				Gestalten Sie Ihr SmartHome wirklich smart – vollständig nach Ihren Vorstellungen!			<div class="mt-10">
+				<a class="mt-4 uppercase"
+					href="/de/produkt/">Mehr erfahren</a><br>
+				<a class="uppercase" href="/de/downloads/anfordern/">
+					Lizenz anfordern</a>
+			</div>
+
+			</p>
+		</div>
+		<address id="address" class="xl:col-span-3 not-italic"> <!-- mitte links-->
+			<h4> Adresse </h4>
+			<hr>
+			<table>
+				<tbody>
+					<tr>
+						<td><i class="fas fa-phone text-accent"></i></td>
+						<td>+49 - (0) 451 30500511</td>
+					</tr>
+					<tr>
+						<td class=""><i class="fas fa-envelope text-accent"></i></td>
+						<td>support@symcon.de</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="flex flex-col">
+								<i class="fas fa-map text-accent -mt-8"></i>
+							</div>
+						</td>
+						<td>Symcon GmbH<br>Willy-Brandt-Allee 31b<br>D-23554 Lübeck</td>
+					</tr>
+				</tbody>
+			</table>
+		</address>
+		<div class="xl:col-span-3"><!--mitte rechts-->
+			<h4> Sitemap </h4>
+			<hr>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<a class=""
+								href="/de/">
+								Home							</a>
+						</td>
+						<td><a class=""
+								href="/de/impressum/">
+								Impressum							</a></td>
+					</tr>
+					<tr>
+						<td>
+							<a class=""
+								href="/de/produkt/">
+								Produkt							</a>
+						</td>
+						<td><a class=""
+								href="/de/datenschutz/">
+								Datenschutz							</a></td>
+					</tr>
+					<tr>
+						<td>
+							<a class=""
+								href="/de/downloads/">
+								Downloads							</a>
+						</td>
+						<td><a
+								href="https://status.symcon.de/">Status</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a class=""
+								href="/de/integratoren/">
+								Integratoren							</a>
+						</td>
+						<td class="no-wrap">
+							<a class="" href="/de/produkt/presse-medien/">
+								Presse & Medien							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a class=""
+								href="/de/shop/">
+								Shop							</a>
+						</td>
+						<td>
+							<a class=""
+								href="/de/karriere/">
+								Karriere							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="xl:col-span-3"><!--rechts-->
+			<h4> Newsletter </h4>
+			<hr>
+			<form id="newsletterform">
+				<input type="email" value="" id="newsletter-email" name="query" placeholder="E-Mail Adresse">
+				<div>
+					<label for="newsletter-privacy" class="flex items-center gap-2 mt-2 py-2">
+						<input type="checkbox" class="dark" id="newsletter-privacy">
+												<span class="fake-label-dark" id="newsletter-privacytext">Ich habe die <a target="_blank" href=/de/datenschutz/>Datenschutzerklärung</a> gelesen und akzeptiert</span>
+					</label>
+				</div>
+				<button id="newsletter-submit" class="btn btn-accent mt-2">Anmelden</button>
+			</form>
+			<script>
+				/*TODO fix script*/
+				document.getElementById("newsletterform").addEventListener("submit", function(e) {
+					e.preventDefault();
+				});
+				document.getElementById("newsletter-submit").addEventListener("click", function() {
+					let email = document.getElementById("newsletter-email").value.trim();
+					const emailReg = /^([\w\+\-\.]+@([\w\-]+\.)+[\w\-]{2,63})?$/;
+					let privacy = document.getElementById("newsletter-privacy").checked;
+
+					if (!privacy) {
+						document.getElementById("newsletter-privacytext").classList.add("error");
+						return false;
+					}
+
+					if (email == "" || !emailReg.test(email)) {
+						document.getElementById("newsletter-email").classList.add("error");
+						return false;
+					}
+
+					if (typeof ga !== "undefined" && ga.hasOwnProperty("loaded") && ga.loaded === true) {
+						ga("send", "event", "newsletter", "subscribe", "homepage");
+					}
+
+					let fd = new FormData();
+					fd.append("name", "");
+					fd.append("email", email);
+					fd.append("hp", "");
+					fd.append("subform", "yes");
+					fd.append("list", "a8qySsQt935pL7633jGsFd4w");
+					fd.append("gdpr", "on");
+					fd.append("boolean", "true");
+
+					document.getElementById("newsletter-privacytext").classList.remove("error");
+					document.getElementById("newsletter-email").classList.remove("error");
+					document.getElementById("newsletter-submit").innerText = ". . .";
+
+					fetch("https://mail.symcon.de/subscribe", {
+							method: "POST",
+							body: fd
+						})
+						.then(response => response.text())
+						.then(data => {
+							if (data == "1") {
+								//success animation
+								document.getElementById("newsletter-submit").style.backgroundColor = "#32c9ac";
+								document.getElementById("newsletter-submit").style.borderColor = "#32c9ac";
+								document.getElementById("newsletter-submit").innerText = "Anmeldung erfolgreich";
+							} else if (data == "Already subscribed.") {
+								//success animation
+								document.getElementById("newsletter-submit").style.backgroundColor = "#32c9ac";
+								document.getElementById("newsletter-submit").style.borderColor = "#32c9ac";
+								document.getElementById("newsletter-submit").innerText = "Bereits angemeldet";
+							} else {
+								//error animation
+								document.getElementById("newsletter-submit").style.backgroundColor = "#b51c1c";
+								document.getElementById("newsletter-submit").style.borderColor = "#b51c1c";
+								document.getElementById("newsletter-submit").innerText = "Anmeldung fehlgeschlagen";
+							}
+						})
+						.catch((error) => {
+							//error animation
+							document.getElementById("newsletter-submit").style.backgroundColor = "#b51c1c";
+							document.getElementById("newsletter-submit").style.borderColor = "#b51c1c";
+							document.getElementById("newsletter-submit").innerText = "Anmeldung fehlgeschlagen";
+						});
+					return false;
+				});
+			</script>
+		</div>
+
+
+		<!--unten-->
+		<div class="xl:col-span-10 ">
+			<hr class="max-md:hidden">
+			<div class="flex flex-col md:flex-row items-center justify-between">
+
+				<p class="copyright"> &copy Copyright
+					2026 by
+					<a href=/de/>Symcon
+						GmbH</a>,
+					Unser Unternehmen ist ISO 9001:2015 zertifiziert!				</p>
+
+
+				<p class="copyright align-right flex gap-4">
+					<a href="https://www.facebook.com/symcongmbh"><i class="fab fa-facebook-f text-gray-footer"></i>
+					</a>
+					<a href="https://www.twitter.com/symcongmbh"><i class="fab fa-twitter text-gray-footer"></i> </a>
+					<a href="https://www.instagram.com/symcongmbh/"><i class="fab fa-instagram text-gray-footer"></i>
+					</a>
+					<a href="https://www.youtube.com/c/symcongmbh"><i class="fab fa-youtube text-gray-footer"></i></a>
+				</p>
+
+			</div>
+		</div>
+		<div class="xl:col-span-2">
+			<hr class="max-md:hidden">
+			<p class="flex justify-center items-center gap-2">
+								<a href="/de/service/dokumentation/komponenten/objekt-darstellung/schieberegler/" hreflang="de" class="text-accent">
+					DE
+				</a> |
+								<a href="/en/service/documentation/components/object-presentation/slider/"					hreflang="en" class="!text-gray-footer">
+					EN
+				</a>
+			</p>
+		</div>
+		<div class="max-md:h-4"></div>
+	</footer>
+	<script>
+		// Anchors used to contain umlauts (e.g. #Übersicht), they are ASCII now.
+		// Old links jump to the new anchor.
+		(function () {
+			var hash;
+			try {
+				hash = decodeURIComponent(location.hash.slice(1));
+			} catch (e) {
+				return;
+			}
+			if (hash === "" || document.getElementById(hash) !== null) {
+				return;
+			}
+			var ascii = { "ä": "ae", "ö": "oe", "ü": "ue", "Ä": "Ae", "Ö": "Oe", "Ü": "Ue", "ß": "ss" };
+			var id = hash.replace(/[äöüÄÖÜß]/g, function (c) { return ascii[c]; });
+			var target = id !== hash ? document.getElementById(id) : null;
+			if (target !== null) {
+				history.replaceState(null, "", "#" + id);
+				target.scrollIntoView();
+			}
+		})();
+	</script>
+
+</section>
+
+  
+
+<script>
+  window.addEventListener("load", function (event) {
+    let userLang = navigator.language || navigator.userLanguage;
+    let currentLang = "de";
+    let availableLanguages = JSON.parse('{"de":{"code":"de","default":true,"direction":"ltr","hasCustomDomain":false,"locale":{"6":"de_DE"},"name":"Deutsch","rules":{"\u00c4":"AE","\u00d6":"OE","\u00dc":"UE","\u00df":"ss","\u00e4":"ae","\u00f6":"oe","\u00fc":"ue"},"url":"\/de"},"en":{"code":"en","default":false,"direction":"ltr","hasCustomDomain":false,"locale":{"6":"en"},"name":"English","rules":[],"url":"\/en"},"nl":{"code":"nl","default":false,"direction":"ltr","hasCustomDomain":false,"locale":{"6":"nl_NL"},"name":"Niederl\u00e4ndisch","rules":[],"url":"\/nl"}}');
+
+    let langURL = {
+            "de":"/de/service/dokumentation/komponenten/objekt-darstellung/schieberegler",
+            "en":"/en/service/documentation/components/object-presentation/slider",
+            "nl":"/nl/service/dokumentation/komponenten/objekt-darstellung/schieberegler",
+          }
+
+    if (userLang.indexOf('-') !== -1) {
+      userLang = userLang.split('-')[0];
+    }
+
+
+    //Browser Site
+    //de de -> hidden
+    //en de -> show, link en
+    //il de -> show, link en
+    //de en -> show, link de
+
+    if (userLang != currentLang) {
+      if(userLang in langURL || (!(userLang in langURL) && currentLang != "en")){
+        document.getElementById("language-link").classList.remove("hidden");
+      }
+      document.getElementById("language-link").href = userLang in langURL ? langURL[userLang] + "/" : currentLang == "en" ? langURL['de'] + "/" : langURL['en'] + "/";
+      document.getElementById("language-link").setAttribute("hreflang", userLang);
+    }
+
+  });
+
+  document.addEventListener("scroll", (e) => {
+    /* if scoll offset is not 0 move language button to the top left*/
+
+    let link = document.getElementById("language-link");
+    let text = document.getElementById("fixed-button-language-text");
+    if (window.scrollY > 0) {
+      text.classList.remove("w-56" , "ml-4");
+      text.classList.add("w-0");
+
+    } else {
+      text.classList.add("w-56", "ml-4");
+      text.classList.remove("w-0");
+    }
+  })
+
+</script>
+
+
+
+  <a href="#" hreflang="" class="fixed hidden bottom-2 left-2 bg-accent min-w-[2rem] h-8 flex items-center max-w-64 md:left-auto md:right-2 md:bottom-auto md:top-[12.5rem] md:h-16 group" id="language-link">
+    <span class="flex justify-center items-center w-8 md:w-16">
+      <i class="fas fa-language text-xl"></i>
+    </span>
+    <span id="fixed-button-language-text" class="overflow-hidden inline-block w-56 ml-4 transition-all duration-500 whitespace-nowrap group-hover:w-56">
+      English website available    </span>
+  </a>
+
+
+<!--Kontakt und scroll to Top-->
+<script>
+  function scrollToTop() {
+    window.scroll({top: 0, left: 0, behavior: 'smooth'});
+  }
+</script>
+
+<button onclick="scrollToTop()" id="fixed-button-scroll-top" class="fixed bottom-12 md:bottom-20 right-2 opacity-0 ml-auto h-8 w-8 md:h-16 md:w-16 bg-gray-400 text-white text-2xl transition-all
+   duration-500 hover:bg-base shadow" title="Gehe zum Start"><i
+    class="fas fa-arrow-up"></i>
+</button>
+
+<a id="fixed-button-ask-button"
+   class="fixed bottom-2 right-2 opacity-0 group h-8 w-8 md:h-16 md:w-16 hover:w-64 gap-4 flex justify-center items-center bg-accent p-4 transition-all duration-300"
+   href="/de/kontakt/">
+  <span class="transition-all duration-300 ml-4"><i class="fas fa-envelope"></i></span>
+  <span id="fixed-button-ask-text" class="w-0 overflow-hidden group-hover:w-full group-hover:flex whitespace-nowrap transition-all
+    duration-300 group-hover">
+    Haben Sie noch Fragen?  </span>
+</a>
+
+<script>
+  let buttonScrollTop = document.getElementById("fixed-button-scroll-top")
+  let buttonAsk = document.getElementById("fixed-button-ask-button")
+
+  window.addEventListener("scroll", (e) => {
+    if (window.scrollY > 300) {
+      buttonScrollTop.classList.remove("opacity-0")
+      buttonAsk.classList.remove("opacity-0")
+    } else {
+      buttonScrollTop.classList.add("opacity-0")
+      buttonAsk.classList.add("opacity-0")
+    }
+  })
+
+  window.addEventListener("load", () => {
+    let footer = document.getElementById("footer");
+    let observer = new IntersectionObserver((entries) => {
+      let button = document.getElementById("fixed-button-ask-button");
+      let text = document.getElementById("fixed-button-ask-text");
+      if (entries[0].isIntersecting) {
+        button.classList.add("w-64");
+        button.classList.remove("w-8", "md:w-16");
+        text.classList.add("w-full", "flex");
+        text.classList.remove("w-0");
+      } else {
+        button.classList.remove("w-64");
+        button.classList.add("w-8", "md:w-16");
+        text.classList.remove("w-full", "flex");
+        text.classList.add("w-0");
+      }
+    }, {threshold: 0});
+
+    observer.observe(footer);
+  })
+
+</script>    <script defer src="/media/plugins/zephir/cookieconsent/index.js"></script>
+<script defer src="/de/cookieconsent.js"></script></body>
+
+</html>

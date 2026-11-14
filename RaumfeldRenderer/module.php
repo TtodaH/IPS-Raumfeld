@@ -54,13 +54,33 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->SetTimerInterval('RFUpdate', 0);
         $this->WriteAttributeString('RendererLocation', '');
 
+        // Media-Player-Kachel: Integer mit ~PlaybackPreviousNext und Variablenaktion
+        $this->MaintainVariable('Playback', 'Wiedergabe', VARIABLETYPE_INTEGER, '~PlaybackPreviousNext', 5, true);
         $this->MaintainVariable('Volume', 'Lautstaerke', VARIABLETYPE_INTEGER, '~Intensity.100', 10, true);
-        $this->MaintainVariable('Mute', 'Stumm', VARIABLETYPE_BOOLEAN, '~Switch', 20, true);
-        $this->MaintainVariable('TransportState', 'Wiedergabe', VARIABLETYPE_STRING, '', 30, true);
+        // ~Mute leitet in der Kachel die Verwendung "Stumm schalten" ab
+        $this->MaintainVariable('Mute', 'Stumm', VARIABLETYPE_BOOLEAN, '~Mute', 20, true);
+        $this->MaintainVariable('TransportState', 'Transportstatus', VARIABLETYPE_STRING, '', 30, true);
         $this->MaintainVariable('PowerState', 'Betriebszustand', VARIABLETYPE_STRING, '', 40, true);
 
+        $this->EnableAction('Playback');
         $this->EnableAction('Volume');
         $this->EnableAction('Mute');
+
+        // Namen explizit setzen: MaintainVariable benennt bestehende Variablen
+        // nicht immer um, was sonst zu zwei Variablen "Wiedergabe" fuehrt.
+        $names = [
+            'Playback' => 'Wiedergabe',
+            'Volume' => 'Lautstaerke',
+            'Mute' => 'Stumm',
+            'TransportState' => 'Transportstatus',
+            'PowerState' => 'Betriebszustand',
+        ];
+        foreach ($names as $ident => $name) {
+            $variableID = @$this->GetIDForIdent($ident);
+            if ($variableID > 0 && IPS_GetName($variableID) !== $name) {
+                IPS_SetName($variableID, $name);
+            }
+        }
 
         $host = trim($this->ReadPropertyString('Host'));
         if ($host === '') {
@@ -97,6 +117,9 @@ class RaumfeldRenderer extends IPSModuleStrict
     public function RequestAction(string $Ident, mixed $Value): void
     {
         switch ($Ident) {
+            case 'Playback':
+                $this->RFRSetPlayback((int) $Value);
+                break;
             case 'Volume':
                 $this->RFRSetVolume((int) $Value);
                 break;
@@ -243,6 +266,7 @@ class RaumfeldRenderer extends IPSModuleStrict
         $transport = $this->RFXmlValue($this->RFSoapAV('GetTransportInfo', ['InstanceID' => 0]), 'CurrentTransportState');
         if ($transport !== '') {
             $this->SetValue('TransportState', $transport);
+            $this->SetValue('Playback', $this->RFPlaybackFromTransport($transport));
         }
 
         // Selbstheilung: antwortet das Geraet, ist ein alter Fehlerstatus hinfaellig.
@@ -283,6 +307,48 @@ class RaumfeldRenderer extends IPSModuleStrict
             }
         }
         return '';
+    }
+
+    /**
+     * Bildet den UPnP-Transportzustand auf das Profil ~PlaybackPreviousNext ab.
+     * 0 = Zurueck, 1 = Stop, 2 = Play, 3 = Pause, 4 = Weiter
+     */
+    private function RFPlaybackFromTransport(string $Transport): int
+    {
+        switch ($Transport) {
+            case 'PLAYING':
+            case 'TRANSITIONING':
+                return 2;
+            case 'PAUSED_PLAYBACK':
+                return 3;
+            case 'STOPPED':
+            case 'NO_MEDIA_PRESENT':
+            default:
+                return 1;
+        }
+    }
+
+    private function RFRSetPlayback(int $Value): void
+    {
+        switch ($Value) {
+            case 0:
+                $this->Previous();
+                break;
+            case 1:
+                $this->Stop();
+                break;
+            case 2:
+                $this->Play();
+                break;
+            case 3:
+                $this->Pause();
+                break;
+            case 4:
+                $this->Next();
+                break;
+            default:
+                $this->SendDebug('Playback', 'Unbekannter Wert ' . $Value, 0);
+        }
     }
 
     private function RFRSetVolume(int $Volume): void
