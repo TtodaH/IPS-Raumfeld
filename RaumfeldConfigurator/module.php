@@ -229,8 +229,15 @@ class RaumfeldConfigurator extends IPSModuleStrict
             return $zones;
         }
 
+        $zoneIndex = 0;
         foreach ($doc->xpath('//*[local-name()="zone"]') ?: [] as $zoneNode) {
-            $zone = ['udn' => (string) $zoneNode['udn'], 'name' => '', 'rooms' => []];
+            $zoneIndex++;
+            // Raumfeld-Zonen tragen keinen Namen; Ersatzbezeichnung fuer die Tabelle.
+            $zoneName = trim((string) $zoneNode['name']);
+            if ($zoneName === '') {
+                $zoneName = 'Zone ' . $zoneIndex;
+            }
+            $zone = ['udn' => (string) $zoneNode['udn'], 'name' => $zoneName, 'rooms' => []];
             foreach ($zoneNode->xpath('.//*[local-name()="room"]') ?: [] as $roomNode) {
                 $zone['rooms'][] = $this->RFRoomNode($roomNode);
             }
