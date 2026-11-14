@@ -1,174 +1,53 @@
-# IPS-Raumfeld
+# Thomas Hellstern
 
-IP-Symcon-Modul für Teufel Raumfeld Geräte (Sounddeck, Speaker, Multiroom).
-Steuert Lautstärke, Stummschaltung und Wiedergabe direkt im lokalen Netz –
-ohne Cloud, ohne die offizielle Raumfeld-App.
+Folgende Module beinhaltet das Thomas Hellstern Repository:
 
-**Live getestet** gegen ein Teufel Raumfeld Sounddeck (IP-Symcon 9.1, PHP 8.5).
+- __Raumfeld Discovery__ ([Dokumentation](RaumfeldDiscovery))  
+	Sucht Teufel Raumfeld Hosts im lokalen Netz per SSDP und legt Configurator-Instanzen an.
 
-## Warum
+- __Raumfeld Configurator__ ([Dokumentation](RaumfeldConfigurator))  
+	Liest Geräte, Zonen und Räume eines Raumfeld Hosts und legt Renderer-Instanzen an.
 
-Die offizielle Raumfeld-App verbindet sich träge, weil sie den Host auf
-Port 47365 mit Long-Polling abfragt. Die Geräte sprechen aber eine einfache,
-vollständig lokale HTTP- und UPnP/SOAP-Schnittstelle. Dieses Modul nutzt sie
-direkt.
+- __Raumfeld Renderer__ ([Dokumentation](RaumfeldRenderer))  
+	Steuert Lautstärke, Stummschaltung und Wiedergabe eines Raums direkt per UPnP/SOAP.
 
 ## Installation
 
-### Über die Module Control (empfohlen)
+Die Bibliothek über die Module Control einbinden:
 
-1. In IP-Symcon die Instanz **Modules** öffnen (Kern-Instanzen).
-2. Über **+** die Git-URL eintragen:
-   `https://github.com/TtodaH/IPS-Raumfeld`
-3. Die Bibliothek **IPS-Raumfeld** erscheint im Objektbaum.
+```
+https://github.com/TtodaH/IPS-Raumfeld
+```
 
-### Manuell
-
-Den Ordner nach `<IP-Symcon-Kernelverzeichnis>/modules/IPS-Raumfeld/` kopieren
-und anschliessend die Bibliothek neu laden:
+Alternativ den Ordner nach `<Kernelverzeichnis>/modules/IPS-Raumfeld/` kopieren und
+die Bibliothek neu laden:
 
 ```php
 MC_ReloadModule(<ID der Instanz Modules>, 'IPS-Raumfeld');
 ```
 
-Ein Neustart ist nicht noetig. Wichtig: `library.json` muss das vollstaendige
-Format mit `compatibility`, `version`, `build` und `date` enthalten, sonst
-werden die `module.json`-Dateien ignoriert (Details in
-[.dev/docs/ENTWICKLUNG.md](.dev/docs/ENTWICKLUNG.md)).
-
-## Einrichtung
-
-1. **Raumfeld Discovery** anlegen (Instanz hinzufügen → Teufel → Raumfeld Discovery).
-   - Sucht Hosts per SSDP.
-   - Ist Multicast im Netz blockiert, IP-Adresse manuell eintragen.
-   - In der Liste den Host über **+** als Configurator anlegen.
-2. **Raumfeld Configurator** öffnen.
-   - IP-Adresse prüfen (Standard: automatisch übernommen).
-   - Die Tabelle zeigt Zone, Raum und Renderer.
-   - Über **+** je Raum eine **Raumfeld Renderer**-Instanz anlegen.
-3. **Raumfeld Renderer** öffnen.
-   - Variablen `Lautstärke`, `Stumm` und `Wiedergabe` erscheinen.
-   - Optional Statusabfrage-Intervall setzen (0 = aus).
-
-## Variablen
-
-| Ident | Typ | Profil | Zugriff |
-| --- | --- | --- | --- |
-| `Volume` | Integer | `~Intensity.100` | lesen/schreiben |
-| `Mute` | Boolean | `~Switch` | lesen/schreiben |
-| `TransportState` | String | – | nur lesen |
-| `PowerState` | String | – | nur lesen |
-
-`TransportState` liefert die UPnP-Werte `PLAYING`, `PAUSED_PLAYBACK`,
-`STOPPED`, `TRANSITIONING`, `NO_MEDIA_PRESENT`.
-
-`PowerState` kommt aus `getZones` und zeigt den Betriebszustand des Raums:
-`ACTIVE`, `MANUAL_STANDBY` oder `AUTOMATIC_STANDBY`.
-
-## Standby und dynamischer Port
-
-Der SOAP-Port des Renderers ist **dynamisch** und ändert sich nach Standby oder
-Neustart des Geräts. Wird die alte Adresse weiterverwendet, reagiert das Gerät
-nicht mehr – es wirkt, als müsse es neu gestartet werden.
-
-Das Modul behandelt das automatisch:
-
-1. Bei einem fehlgeschlagenen SOAP-Aufruf wird die Renderer-Adresse über
-   `listDevices` neu aufgelöst und der Aufruf einmal wiederholt.
-2. `RFR_Reconnect($id)` verwirft den Adress-Cache und baut die Verbindung neu auf.
-3. `RFR_Wake($id)` sendet `leaveStandby`; ist der Host nicht erreichbar,
-   zusätzlich ein Wake-on-LAN-Paket.
-4. `RFR_WakeOnLan($id)` sendet nur das Magic Packet (UDP-Broadcast, Ports 9 und 7).
-
-Für Wake-on-LAN die **MAC-Adresse** in der Instanz eintragen. Sie steht in der
-Gerätebeschreibung als `serialNumber` (beim Sounddeck z. B. `ec:24:b8:ec:c5:b7`).
-
-## Funktionen
-
-Im Renderer stehen diese PHP-Funktionen zur Verfügung (Präfix `RFR_`):
-
-| Funktion | Wirkung |
-| --- | --- |
-| `RFR_Play($id)` | Wiedergabe starten |
-| `RFR_Pause($id)` | Pause |
-| `RFR_Stop($id)` | Stop |
-| `RFR_Next($id)` | nächster Titel |
-| `RFR_Previous($id)` | vorheriger Titel |
-| `RFR_TogglePlayPause($id)` | Play/Pause umschalten |
-| `RFR_UpdateState($id)` | Status neu lesen |
-| `RFR_Wake($id)` | Raum aus Standby wecken (inkl. Wake-on-LAN-Fallback) |
-| `RFR_Standby($id)` | Raum in Standby schicken |
-| `RFR_WakeOnLan($id)` | Magic Packet senden |
-| `RFR_Reconnect($id)` | Adresse neu auflösen, Verbindung neu aufbauen |
-
-Im Configurator (Präfix `RFC_`):
-
-| Funktion | Wirkung |
-| --- | --- |
-| `RFC_Refresh($id)` | Geräteliste neu laden |
-
-## Statuscodes
-
-| Code | Bedeutung |
-| --- | --- |
-| 102 | aktiv |
-| 104 | Host oder Renderer nicht konfiguriert |
-| 201 | Host/Renderer nicht erreichbar |
-| 202 | Gerät im Standby (`PowerState` ungleich `ACTIVE`) |
-
 ## Aufbau
 
 ```
-IPS-Raumfeld/                 <- Bibliothekswurzel
-  library.json                Pflichtdatei der Bibliothek
+IPS-Raumfeld/
+  library.json
   README.md
   LICENSE
-  .gitignore
-  RaumfeldDiscovery/          Modul (module.json + module.php)
-  RaumfeldConfigurator/       Modul (module.json + module.php)
-  RaumfeldRenderer/           Modul (module.json + module.php + form.json)
-  .dev/                       Entwicklung: Doku, Tests, Werkzeuge
+  RaumfeldDiscovery/      Modul
+  RaumfeldConfigurator/   Modul
+  RaumfeldRenderer/       Modul
+  .dev/                   Entwicklung (Doku, Tests, Werkzeuge)
 ```
 
-Wichtig: IP-Symcon wertet **jeden** Unterordner der Bibliothekswurzel als Modul.
-Ordner ohne `module.json` machen die Bibliothek ungueltig
-(`Modul IPS-Raumfeld beinhaltet ungueltiges Module ...`). Entwicklungsdateien
-liegen deshalb unter `.dev/` – Punkt-Ordner werden ignoriert.
-
-
-## Dokumentation
-
-- [.dev/docs/API.md](.dev/docs/API.md) – reverse-engineerte Geräteschnittstelle
-- [.dev/docs/INSTALL.md](.dev/docs/INSTALL.md) – Installation und Einrichtung
-- [.dev/docs/ENTWICKLUNG.md](.dev/docs/ENTWICKLUNG.md) – Module entwickeln und testen
-
-## Pruefung gegen den offiziellen Modul-Validator
-
-Die JSON-Dateien werden gegen die Schemas des Symcon-Modul-Validators geprueft
-(Quelle: `https://www.symcon.de/assets/files/validation/`, Ablage unter
-`.dev/docs/ref/`).
-
-```bash
-python .dev/tools/validate.py
-```
-
-Erwartete Ausgabe: `Alle Dateien sind schema-konform.` mit genau einer
-Warnung zu `compatibility.version`. Diese Warnung ist bekannt: das offizielle
-`librarySchema.json` endet bei Version 6.2, Module auf Basis von
-`IPSModuleStrict` brauchen jedoch mindestens 8.1. Das Referenzmodul
-`IPS-KNXBusMonitor` nutzt ebenfalls 8.1.
-
-```bash
-for f in */module.php; do php -l "$f"; done   # PHP-Syntax
-docker run --rm -v "$PWD:/app" php:8.3-cli sh -c 'true'  # optional
-```
+IP-Symcon wertet jeden Unterordner der Bibliothekswurzel als Modul. Ordner ohne
+`module.json` machen die Bibliothek ungültig; Entwicklungsdateien liegen deshalb
+unter `.dev/`.
 
 ## Sicherheitshinweis
 
-Raumfeld-Geräte haben **keine Authentifizierung im lokalen Netz**. Jedes Gerät
-im selben Netz kann Lautstärke, Zonen und Standby ändern. Das ist eine
-Design-Entscheidung von Raumfeld. Wer das nicht will, sollte die Geräte in ein
-eigenes VLAN legen.
+Raumfeld-Geräte haben keine Authentifizierung im lokalen Netz. Jedes Gerät im
+selben Netz kann Lautstärke, Zonen und Standby ändern. Wer das nicht will, sollte
+die Geräte in ein eigenes VLAN legen.
 
 ## Lizenz
 
