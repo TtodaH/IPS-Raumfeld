@@ -48,9 +48,31 @@ und IP-Symcon neu starten.
 | `Volume` | Integer | `~Intensity.100` | lesen/schreiben |
 | `Mute` | Boolean | `~Switch` | lesen/schreiben |
 | `TransportState` | String | – | nur lesen |
+| `PowerState` | String | – | nur lesen |
 
 `TransportState` liefert die UPnP-Werte `PLAYING`, `PAUSED_PLAYBACK`,
 `STOPPED`, `TRANSITIONING`, `NO_MEDIA_PRESENT`.
+
+`PowerState` kommt aus `getZones` und zeigt den Betriebszustand des Raums:
+`ACTIVE`, `MANUAL_STANDBY` oder `AUTOMATIC_STANDBY`.
+
+## Standby und dynamischer Port
+
+Der SOAP-Port des Renderers ist **dynamisch** und ändert sich nach Standby oder
+Neustart des Geräts. Wird die alte Adresse weiterverwendet, reagiert das Gerät
+nicht mehr – es wirkt, als müsse es neu gestartet werden.
+
+Das Modul behandelt das automatisch:
+
+1. Bei einem fehlgeschlagenen SOAP-Aufruf wird die Renderer-Adresse über
+   `listDevices` neu aufgelöst und der Aufruf einmal wiederholt.
+2. `RFR_Reconnect($id)` verwirft den Adress-Cache und baut die Verbindung neu auf.
+3. `RFR_Wake($id)` sendet `leaveStandby`; ist der Host nicht erreichbar,
+   zusätzlich ein Wake-on-LAN-Paket.
+4. `RFR_WakeOnLan($id)` sendet nur das Magic Packet (UDP-Broadcast, Ports 9 und 7).
+
+Für Wake-on-LAN die **MAC-Adresse** in der Instanz eintragen. Sie steht in der
+Gerätebeschreibung als `serialNumber` (beim Sounddeck z. B. `ec:24:b8:ec:c5:b7`).
 
 ## Funktionen
 
@@ -65,8 +87,10 @@ Im Renderer stehen diese PHP-Funktionen zur Verfügung (Präfix `RFR_`):
 | `RFR_Previous($id)` | vorheriger Titel |
 | `RFR_TogglePlayPause($id)` | Play/Pause umschalten |
 | `RFR_UpdateState($id)` | Status neu lesen |
-| `RFR_Wake($id)` | Raum aus Standby wecken |
+| `RFR_Wake($id)` | Raum aus Standby wecken (inkl. Wake-on-LAN-Fallback) |
 | `RFR_Standby($id)` | Raum in Standby schicken |
+| `RFR_WakeOnLan($id)` | Magic Packet senden |
+| `RFR_Reconnect($id)` | Adresse neu auflösen, Verbindung neu aufbauen |
 
 Im Configurator (Präfix `RFC_`):
 
@@ -81,6 +105,7 @@ Im Configurator (Präfix `RFC_`):
 | 102 | aktiv |
 | 104 | Host oder Renderer nicht konfiguriert |
 | 201 | Host/Renderer nicht erreichbar |
+| 202 | Gerät im Standby (`PowerState` ungleich `ACTIVE`) |
 
 ## Aufbau
 
