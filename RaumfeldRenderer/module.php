@@ -116,17 +116,20 @@ class RaumfeldRenderer extends IPSModuleStrict
             return;
         }
 
+        // Timer auch bei nicht erreichbarem Renderer setzen: der Dienst des
+        // Geraets setzt zeitweise aus (beobachtet), die Instanz soll sich dann
+        // selbst erholen statt dauerhaft auf 201 zu bleiben.
+        $interval = $this->ReadPropertyInteger('UpdateInterval');
+        if ($interval > 0) {
+            $this->SetTimerInterval('RFUpdate', $interval * 1000);
+        }
+
         if (!$this->RFResolveRenderer()) {
             $this->SetStatus(201);
             return;
         }
 
         $this->SetStatus(IS_ACTIVE);
-
-        $interval = $this->ReadPropertyInteger('UpdateInterval');
-        if ($interval > 0) {
-            $this->SetTimerInterval('RFUpdate', $interval * 1000);
-        }
 
         $this->RFUpdateState();
     }
