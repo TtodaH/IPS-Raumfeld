@@ -63,7 +63,18 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->EnableAction('Mute');
 
         $host = trim($this->ReadPropertyString('Host'));
-        if ($host === '' || $this->ReadPropertyString('RendererUDN') === '') {
+        if ($host === '') {
+            $this->SetStatus(104);
+            return;
+        }
+
+        // Raum und Renderer automatisch ermitteln, wenn nur die IP gesetzt ist.
+        // Das Schreiben der Properties loest ApplyChanges erneut aus; beim
+        // zweiten Durchlauf sind die Felder gefuellt und die Erkennung entfaellt.
+        if ($this->ReadPropertyString('RoomUDN') === '' || $this->ReadPropertyString('RendererUDN') === '') {
+            if ($this->RFAutoDetect($host)) {
+                return;
+            }
             $this->SetStatus(104);
             return;
         }
@@ -278,6 +289,53 @@ class RaumfeldRenderer extends IPSModuleStrict
     {
         $this->RFSoapRC('SetMute', ['InstanceID' => 0, 'Channel' => 'Master', 'DesiredMute' => $Mute ? 1 : 0]);
         $this->SetValue('Mute', $Mute);
+    }
+
+    /**
+     * Ermittelt Raum und Renderer vom Host, wenn nur die IP bekannt ist.
+     * Bei mehreren Räumen wird der erste genommen. Gefundene Werte werden als
+     * Property geschrieben; das loest ApplyChanges erneut aus, terminiert aber,
+     * weil die Felder danach gefuellt sind.
+     */
+    private function RFAutoDetect(string $Host): bool
+    {
+        $xml = $this->RFHostGet('/' . bin2hex(random_bytes(8)) . '/getZones');
+        $doc = $this->RFLoadXML($xml);
+        if ($doc === null) {
+            $this->SendDebug('AutoDetect', 'getZones nicht lesbar', 0);
+            return false;
+        }
+
+        $roomUDN = '';
+        $roomName = '';
+        $rendererUDN = '';
+        $rendererName = '';
+
+        foreach ($doc->xpath('//*[local-name()="room"]') ?: [] as $room) {
+            $renderers = $room->xpath('.//*[local-name()="renderer"]') ?: [];
+            if (count($renderers) === 0) {
+                continue;
+            }
+            $roomUDN = (string) $room['udn'];
+            $roomName = (string) $room['name'];
+            $rendererUDN = (string) $renderers[0]['udn'];
+            $rendererName = (string) $renderers[0]['name'];
+            break;
+        }
+
+        if ($roomUDN === '' || $rendererUDN === '') {
+            $this->SendDebug('AutoDetect', 'kein Raum mit Renderer gefunden', 0);
+            return false;
+        }
+
+        $this->SendDebug('AutoDetect', 'Raum ' . $roomName . ', Renderer ' . $rendererName, 0);
+
+        IPS_SetProperty($this->InstanceID, 'RoomUDN', $roomUDN);
+        IPS_SetProperty($this->InstanceID, 'RoomName', $roomName);
+        IPS_SetProperty($this->InstanceID, 'RendererUDN', $rendererUDN);
+        IPS_SetProperty($this->InstanceID, 'RendererName', $rendererName);
+        IPS_ApplyChanges($this->InstanceID);
+        return true;
     }
 
     private function RFResolveRenderer(): bool
