@@ -245,6 +245,13 @@ class RaumfeldRenderer extends IPSModuleStrict
             $this->SetValue('TransportState', $transport);
         }
 
+        // Selbstheilung: antwortet das Geraet, ist ein alter Fehlerstatus hinfaellig.
+        if ($volume !== '' || $mute !== '' || $transport !== '') {
+            if ($this->GetStatus() === 201) {
+                $this->SetStatus(IS_ACTIVE);
+            }
+        }
+
         $power = $this->RFRoomPowerState();
         if ($power !== '') {
             $this->SetValue('PowerState', $power);
