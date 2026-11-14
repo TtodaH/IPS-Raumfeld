@@ -327,7 +327,10 @@ class RaumfeldRenderer extends IPSModuleStrict
         $power = $this->RFRoomPowerState();
         if ($power !== '') {
             $this->SetValue('PowerState', $power);
-            $this->SetValue('Power', $power === 'ACTIVE');
+            // Power ist optional (Eigenschaft PowerVariable).
+            if (@$this->GetIDForIdent('Power') > 0) {
+                $this->SetValue('Power', $power === 'ACTIVE');
+            }
             if ($power !== 'ACTIVE') {
                 $this->SetStatus(202);
             } elseif ($this->GetStatus() === 202) {
