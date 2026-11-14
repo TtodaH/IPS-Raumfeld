@@ -142,6 +142,7 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->SetStatus(IS_ACTIVE);
 
         $this->RFUpdateState();
+        $this->RFEnsureControlVariables();
     }
 
     public function RequestAction(string $Ident, mixed $Value): void
@@ -346,6 +347,10 @@ class RaumfeldRenderer extends IPSModuleStrict
         if ($volume !== '' || $transport !== '') {
             $this->RFReadDeviceSettings();
         }
+
+        // Erst nach dem Lesen spiegeln, sonst schreibt die Instanz alte Werte
+        // in die Steuerungsvariablen zurueck.
+        $this->RFSyncControlVariables();
     }
 
     private function RFRoomPowerState(): string
@@ -497,6 +502,127 @@ class RaumfeldRenderer extends IPSModuleStrict
             IPS_CreateVariableProfile('Raumfeld.StandbyDelay', VARIABLETYPE_INTEGER);
             IPS_SetVariableProfileValues('Raumfeld.StandbyDelay', 0, 7200, 60);
             IPS_SetVariableProfileText('Raumfeld.StandbyDelay', '', ' s');
+        }
+    }
+
+    /**
+     * Legt eigenstaendige Steuerungsvariablen in der Kategorie der Instanz an:
+     * Ein/Aus, Lautstaerke und Eingangsquelle. Jede Variable bekommt ein
+     * Aktionsskript, das die Bedienung an die Instanz weiterleitet.
+     *
+     * Grund: Die Media-Player-Kachel zeigt nur Wiedergabetasten. Lautstaerke
+     * und Stumm erscheinen dort nur mit dem USAGE-Marker, den diese
+     * IP-Symcon-Version nicht akzeptiert. Einzelvariablen ergeben dagegen
+     * saubere Schalter-, Regler- und Auswahlkacheln.
+     */
+    private function RFEnsureControlVariables(): void
+    {
+        $parent = (int) (IPS_GetObject($this->InstanceID)['ParentID'] ?? 0);
+        if ($parent <= 0) {
+            return;
+        }
+
+        $definitions = [
+            'Power' => ['ControlPower', 'Ein/Aus', VARIABLETYPE_BOOLEAN, '~Switch', 1],
+            'Volume' => ['ControlVolume', 'Lautstaerke', VARIABLETYPE_INTEGER, 'Raumfeld.Volume', 10],
+            'InputSource' => ['ControlInputSource', 'Eingangsquelle', VARIABLETYPE_INTEGER, 'Raumfeld.InputSource', 20],
+        ];
+
+        foreach ($definitions as $action => $definition) {
+            [$ident, $name, $type, $profile, $position] = $definition;
+
+            $variableID = 0;
+            foreach (IPS_GetChildrenIDs($parent) as $child) {
+                $o = IPS_GetObject($child);
+                if ($o['ObjectType'] === 2 && $o['ObjectIdent'] === $ident) {
+                    $variableID = $child;
+                    break;
+                }
+            }
+            if ($variableID === 0) {
+                $variableID = IPS_CreateVariable($type);
+                IPS_SetParent($variableID, $parent);
+                IPS_SetIdent($variableID, $ident);
+                IPS_SetName($variableID, $name);
+                IPS_SetPosition($variableID, $position);
+            }
+            IPS_SetVariableCustomProfile($variableID, $profile);
+            $this->RFEnsureControlEvent($variableID, $action);
+        }
+
+        $this->RFSyncControlVariables();
+    }
+
+    /**
+     * Legt ein ausloesendes Ereignis an der Steuerungsvariable an. Das Ereignis
+     * reagiert auf Wertaenderungen und leitet sie an RequestAction weiter.
+     *
+     * Eigenstaendige Variablen unterstuetzen kein IPS_SetVariableCustomAction
+     * (Rueckgabe true, VariableAction bleibt 0), deshalb der Umweg ueber ein
+     * Ereignis. Der Vergleich mit dem Instanzwert verhindert Rueckkopplung:
+     * schreibt die Instanz selbst, sind beide Werte gleich und es passiert
+     * nichts.
+     */
+    private function RFEnsureControlEvent(int $VariableID, string $Action): void
+    {
+        $eventIdent = 'ControlEvent' . $Action;
+        $eventID = (int) @$this->GetIDForIdent($eventIdent);
+        if ($eventID === 0) {
+            $eventID = IPS_CreateEvent(0);
+            IPS_SetParent($eventID, $VariableID);
+            IPS_SetIdent($eventID, $eventIdent);
+            IPS_SetName($eventID, 'Steuerung ' . $Action);
+            IPS_SetHidden($eventID, true);
+            IPS_SetEventTrigger($eventID, 0, $VariableID);
+        }
+
+        // Vergleichswert aus der Instanz, damit die Instanz nicht auf ihre
+        // eigenen Schreibzugriffe reagiert (Rueckkopplung).
+        $referenceIdent = $Action === 'Power' ? 'PowerState' : ($Action === 'Volume' ? 'Volume' : 'InputSource');
+        $referenceID = (int) @$this->GetIDForIdent($referenceIdent);
+
+        if ($Action === 'Power') {
+            $compare = '$reference = GetValue(' . $referenceID . ") === 'ACTIVE';\n"
+                . 'if ($value != $reference) {';
+        } else {
+            $compare = '$reference = GetValue(' . $referenceID . ');' . "\n"
+                . 'if ($value != $reference) {';
+        }
+
+        $code = "<?php\n"
+            . '$value = GetValue($_IPS[' . "'" . 'VARIABLE' . "'" . ']);' . "\n"
+            . $compare . "\n"
+            . '    IPS_RequestAction(' . $this->InstanceID . ', ' . var_export($Action, true) . ', $value);' . "\n"
+            . '}';
+
+        IPS_SetEventScript($eventID, $code);
+        IPS_SetEventActive($eventID, true);
+    }
+
+    private function RFSyncControlVariables(): void
+    {
+        $parent = (int) (IPS_GetObject($this->InstanceID)['ParentID'] ?? 0);
+        if ($parent <= 0) {
+            return;
+        }
+
+        $values = [
+            'ControlPower' => $this->GetValue('PowerState') === 'ACTIVE',
+            'ControlVolume' => (int) $this->GetValue('Volume'),
+            'ControlInputSource' => (int) $this->GetValue('InputSource'),
+        ];
+
+        foreach ($values as $ident => $value) {
+            foreach (IPS_GetChildrenIDs($parent) as $child) {
+                $o = IPS_GetObject($child);
+                if ($o['ObjectType'] !== 2 || $o['ObjectIdent'] !== $ident) {
+                    continue;
+                }
+                if (GetValue($child) !== $value) {
+                    SetValue($child, $value);
+                }
+                break;
+            }
         }
     }
 
