@@ -54,6 +54,8 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->SetTimerInterval('RFUpdate', 0);
         $this->WriteAttributeString('RendererLocation', '');
 
+        // Ein/Aus: an = leaveStandby, aus = enterManualStandby
+        $this->MaintainVariable('Power', 'Ein/Aus', VARIABLETYPE_BOOLEAN, '~Switch', 1, true);
         // Media-Player-Kachel: Integer mit ~PlaybackPreviousNext und Variablenaktion
         $this->MaintainVariable('Playback', 'Wiedergabe', VARIABLETYPE_INTEGER, '~PlaybackPreviousNext', 5, true);
         $this->MaintainVariable('Volume', 'Lautstaerke', VARIABLETYPE_INTEGER, '~Intensity.100', 10, true);
@@ -62,6 +64,7 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->MaintainVariable('TransportState', 'Transportstatus', VARIABLETYPE_STRING, '', 30, true);
         $this->MaintainVariable('PowerState', 'Betriebszustand', VARIABLETYPE_STRING, '', 40, true);
 
+        $this->EnableAction('Power');
         $this->EnableAction('Playback');
         $this->EnableAction('Volume');
         $this->EnableAction('Mute');
@@ -117,6 +120,13 @@ class RaumfeldRenderer extends IPSModuleStrict
     public function RequestAction(string $Ident, mixed $Value): void
     {
         switch ($Ident) {
+            case 'Power':
+                if ((bool) $Value) {
+                    $this->Wake();
+                } else {
+                    $this->Standby();
+                }
+                break;
             case 'Playback':
                 $this->RFRSetPlayback((int) $Value);
                 break;
@@ -279,6 +289,7 @@ class RaumfeldRenderer extends IPSModuleStrict
         $power = $this->RFRoomPowerState();
         if ($power !== '') {
             $this->SetValue('PowerState', $power);
+            $this->SetValue('Power', $power === 'ACTIVE');
             if ($power !== 'ACTIVE') {
                 $this->SetStatus(202);
             } elseif ($this->GetStatus() === 202) {
