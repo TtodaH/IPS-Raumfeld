@@ -64,10 +64,24 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->MaintainVariable('TransportState', 'Transportstatus', VARIABLETYPE_STRING, '', 30, true);
         $this->MaintainVariable('PowerState', 'Betriebszustand', VARIABLETYPE_STRING, '', 40, true);
 
+        // Geraeteeinstellungen aus der Raumfeld-App (WAMP, Port 55555)
+        $this->MaintainVariable('Leds', 'LEDs', VARIABLETYPE_BOOLEAN, '~Switch', 50, true);
+        $this->MaintainVariable('NightMode', 'Nachtmodus', VARIABLETYPE_BOOLEAN, '~Switch', 55, true);
+        $this->MaintainVariable('InputSource', 'Eingangsquelle', VARIABLETYPE_INTEGER, 'Raumfeld.InputSource', 60, true);
+        $this->MaintainVariable('SubwooferLevel', 'Subwoofer-Pegel', VARIABLETYPE_INTEGER, 'Raumfeld.Subwoofer', 65, true);
+        $this->MaintainVariable('StandbyDelay', 'Standby nach', VARIABLETYPE_INTEGER, 'Raumfeld.StandbyDelay', 70, true);
+
         $this->EnableAction('Power');
         $this->EnableAction('Playback');
         $this->EnableAction('Volume');
         $this->EnableAction('Mute');
+        $this->EnableAction('Leds');
+        $this->EnableAction('NightMode');
+        $this->EnableAction('InputSource');
+        $this->EnableAction('SubwooferLevel');
+        $this->EnableAction('StandbyDelay');
+
+        $this->RFCreateProfiles();
 
         // Namen explizit setzen: MaintainVariable benennt bestehende Variablen
         // nicht immer um, was sonst zu zwei Variablen "Wiedergabe" fuehrt.
@@ -135,6 +149,21 @@ class RaumfeldRenderer extends IPSModuleStrict
                 break;
             case 'Mute':
                 $this->RFRSetMute((bool) $Value);
+                break;
+            case 'Leds':
+                $this->RFWampWrite('led_brightness', (bool) $Value ? 100 : 0);
+                break;
+            case 'NightMode':
+                $this->RFWampWrite('night_mode', (bool) $Value);
+                break;
+            case 'InputSource':
+                $this->RFWampWrite('audio_input_source', (int) $Value);
+                break;
+            case 'SubwooferLevel':
+                $this->RFWampWrite('subwoofer_volume_adjustment', (int) $Value);
+                break;
+            case 'StandbyDelay':
+                $this->RFWampWrite('auto_standby_delay', (int) $Value);
                 break;
             default:
                 throw new Exception('Ungueltige Aktion: ' . $Ident);
@@ -296,6 +325,11 @@ class RaumfeldRenderer extends IPSModuleStrict
                 $this->SetStatus(IS_ACTIVE);
             }
         }
+
+        // Geraeteeinstellungen nur lesen, wenn das Geraet antwortet.
+        if ($volume !== '' || $transport !== '') {
+            $this->RFReadDeviceSettings();
+        }
     }
 
     private function RFRoomPowerState(): string
@@ -422,6 +456,115 @@ class RaumfeldRenderer extends IPSModuleStrict
         return true;
     }
 
+    // ------------------------------------------------------------ WAMP-Einstellungen
+
+    /**
+     * Legt die eigenen Variablenprofile an (idempotent).
+     */
+    private function RFCreateProfiles(): void
+    {
+        if (!IPS_VariableProfileExists('Raumfeld.InputSource')) {
+            IPS_CreateVariableProfile('Raumfeld.InputSource', VARIABLETYPE_INTEGER);
+            IPS_SetVariableProfileAssociation('Raumfeld.InputSource', 0, 'Teufel Streaming', '', -1);
+            IPS_SetVariableProfileAssociation('Raumfeld.InputSource', 1, 'Analog', '', -1);
+            IPS_SetVariableProfileAssociation('Raumfeld.InputSource', 2, 'Optisch', '', -1);
+            IPS_SetVariableProfileAssociation('Raumfeld.InputSource', 3, 'TV', '', -1);
+        }
+
+        if (!IPS_VariableProfileExists('Raumfeld.Subwoofer')) {
+            IPS_CreateVariableProfile('Raumfeld.Subwoofer', VARIABLETYPE_INTEGER);
+            IPS_SetVariableProfileValues('Raumfeld.Subwoofer', -10, 10, 1);
+            IPS_SetVariableProfileText('Raumfeld.Subwoofer', '', ' dB');
+        }
+
+        if (!IPS_VariableProfileExists('Raumfeld.StandbyDelay')) {
+            IPS_CreateVariableProfile('Raumfeld.StandbyDelay', VARIABLETYPE_INTEGER);
+            IPS_SetVariableProfileValues('Raumfeld.StandbyDelay', 0, 7200, 60);
+            IPS_SetVariableProfileText('Raumfeld.StandbyDelay', '', ' s');
+        }
+    }
+
+    private function RFWampTopic(string $Setting): string
+    {
+        $udn = $this->ReadPropertyString('RendererUDN');
+        $safe = str_replace([':', '-'], '_', $udn);
+        return 'com.raumfeld.devices.' . $safe . '.settings.' . $Setting;
+    }
+
+    private function RFWampOpen(): ?RaumfeldWamp
+    {
+        $host = trim($this->ReadPropertyString('Host'));
+        if ($host === '') {
+            return null;
+        }
+        $client = new RaumfeldWamp();
+        if (!$client->connect($host)) {
+            $this->SendDebug('WAMP', 'Verbindung zu ' . $host . ':55555 fehlgeschlagen', 0);
+            return null;
+        }
+        return $client;
+    }
+
+    private function RFWampWrite(string $Setting, $Value): void
+    {
+        $client = $this->RFWampOpen();
+        if ($client === null) {
+            return;
+        }
+        try {
+            $client->set($this->RFWampTopic($Setting), $Value);
+        } finally {
+            $client->close();
+        }
+        $this->SendDebug('WAMP', 'set ' . $Setting . ' = ' . json_encode($Value), 0);
+    }
+
+    /**
+     * Liest die Geraeteeinstellungen ueber eine gemeinsame WAMP-Verbindung.
+     */
+    private function RFReadDeviceSettings(): void
+    {
+        $client = $this->RFWampOpen();
+        if ($client === null) {
+            return;
+        }
+
+        try {
+            $led = $client->get($this->RFWampTopic('led_brightness'));
+            if ($led !== null) {
+                $this->SetValue('Leds', (int) $led > 0);
+            }
+
+            $night = $client->get($this->RFWampTopic('night_mode'));
+            if ($night !== null) {
+                $this->SetValue('NightMode', (bool) $night);
+            }
+
+            $input = $client->get($this->RFWampTopic('audio_input_source'));
+            if ($input !== null) {
+                $this->SetValue('InputSource', (int) $input);
+            }
+
+            $sub = $client->get($this->RFWampTopic('subwoofer_volume_adjustment'));
+            if ($sub !== null) {
+                $this->SetValue('SubwooferLevel', (int) $sub);
+            }
+
+            $delay = $client->get($this->RFWampTopic('auto_standby_delay'));
+            if ($delay !== null) {
+                $this->SetValue('StandbyDelay', (int) $delay);
+            }
+        } finally {
+            $client->close();
+        }
+    }
+
+    /**
+     * Loest die Renderer-Adresse auf. Die UDN eines Raumfeld-Renderers kann
+     * sich aendern (beobachtet nach Zonenwechsel: 23ac20e8 -> da9fbf4a).
+     * Deshalb drei Stufen: exakte UDN, Renderer des konfigurierten Raums,
+     * einziger MediaRenderer. Gefundene UDN wird als Property uebernommen.
+     */
     private function RFResolveRenderer(): bool
     {
         $host = trim($this->ReadPropertyString('Host'));
@@ -437,20 +580,76 @@ class RaumfeldRenderer extends IPSModuleStrict
             return false;
         }
 
+        $devices = [];
+        $renderers = [];
         foreach ($doc->xpath('//*[local-name()="device"]') ?: [] as $device) {
-            if ((string) $device['udn'] !== $udn) {
-                continue;
-            }
+            $deviceUDN = (string) $device['udn'];
             $location = (string) $device['location'];
-            if ($location === '') {
+            if ($deviceUDN === '' || $location === '') {
                 continue;
             }
-            $this->WriteAttributeString('RendererLocation', $location);
+            $devices[$deviceUDN] = $location;
+            if (strpos((string) $device['type'], 'MediaRenderer') !== false) {
+                $renderers[$deviceUDN] = $location;
+            }
+        }
+
+        // 1. Exakte UDN
+        if (isset($devices[$udn])) {
+            $this->WriteAttributeString('RendererLocation', $devices[$udn]);
+            return true;
+        }
+
+        // 2. Renderer des konfigurierten Raums
+        $room = $this->ReadPropertyString('RoomUDN');
+        if ($room !== '') {
+            $zoneXML = $this->RFHostGet('/' . bin2hex(random_bytes(8)) . '/getZones');
+            $zoneDoc = $this->RFLoadXML($zoneXML);
+            if ($zoneDoc !== null) {
+                foreach ($zoneDoc->xpath('//*[local-name()="room"]') ?: [] as $roomNode) {
+                    if ((string) $roomNode['udn'] !== $room) {
+                        continue;
+                    }
+                    foreach ($roomNode->xpath('.//*[local-name()="renderer"]') ?: [] as $rendererNode) {
+                        $candidate = (string) $rendererNode['udn'];
+                        if (!isset($devices[$candidate])) {
+                            continue;
+                        }
+                        $this->RFAdoptRenderer($candidate, $devices[$candidate], (string) $rendererNode['name']);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // 3. Genau ein MediaRenderer vorhanden
+        if (count($renderers) === 1) {
+            $onlyUDN = array_key_first($renderers);
+            $this->RFAdoptRenderer($onlyUDN, $renderers[$onlyUDN], '');
             return true;
         }
 
         $this->SendDebug('Renderer', 'UDN ' . $udn . ' nicht in listDevices von ' . $host, 0);
         return false;
+    }
+
+    /**
+     * Uebernimmt eine neu gefundene Renderer-UDN in die Konfiguration.
+     * Das Schreiben loest ApplyChanges erneut aus; der zweite Durchlauf findet
+     * die UDN dann exakt und terminiert.
+     */
+    private function RFAdoptRenderer(string $UDN, string $Location, string $Name): void
+    {
+        $this->WriteAttributeString('RendererLocation', $Location);
+        if ($this->ReadPropertyString('RendererUDN') === $UDN) {
+            return;
+        }
+        $this->SendDebug('Renderer', 'UDN uebernommen: ' . $UDN, 0);
+        IPS_SetProperty($this->InstanceID, 'RendererUDN', $UDN);
+        if ($Name !== '' && $this->ReadPropertyString('RendererName') !== $Name) {
+            IPS_SetProperty($this->InstanceID, 'RendererName', $Name);
+        }
+        IPS_ApplyChanges($this->InstanceID);
     }
 
     private function RFBaseURL(): string
@@ -594,5 +793,290 @@ class RaumfeldRenderer extends IPSModuleStrict
             return '';
         }
         return trim((string) $nodes[0]);
+    }
+}
+
+/**
+ * Minimaler WAMP-v2-JSON-Client fuer den Raumfeld-Host (Port 55555).
+ *
+ * Der Host bietet neben der Web-API und UPnP einen WAMP-Broker an. Darueber
+ * liegen die Geraeteeinstellungen, die in der Raumfeld-App sichtbar sind
+ * (LED-Helligkeit, Nachtmodus, Eingangsquelle, Subwoofer, Standby-Zeit).
+ *
+ * Protokoll:
+ *   HELLO     [1, "raumfeld", {...}]         -> WELCOME [2, id, {...}]
+ *   CALL      [48, req, {}, topic, [args]]   -> RESULT  [50, req, {}, [wert], {}]
+ *                                            -> ERROR   [8, 48, req, {}, fehler]
+ *
+ * WebSocket wird von Hand gesprochen: Handshake, maskierte Client-Frames,
+ * unverschluesselte Server-Frames. PHP bringt keinen WS-Client mit.
+ */
+class RaumfeldWamp
+{
+    private $socket = null;
+    private string $buffer = '';
+    private int $requestId = 0;
+
+    public function connect(string $Host, int $Port = 55555, int $Timeout = 5): bool
+    {
+        $this->socket = @stream_socket_client(
+            'tcp://' . $Host . ':' . $Port,
+            $errno,
+            $errstr,
+            $Timeout
+        );
+        if ($this->socket === false) {
+            return false;
+        }
+        stream_set_timeout($this->socket, $Timeout);
+
+        $key = base64_encode(random_bytes(16));
+        $request = 'GET / HTTP/1.1' . "\r\n"
+            . 'Host: ' . $Host . ':' . $Port . "\r\n"
+            . "Upgrade: websocket\r\n"
+            . "Connection: Upgrade\r\n"
+            . 'Sec-WebSocket-Key: ' . $key . "\r\n"
+            . "Sec-WebSocket-Version: 13\r\n"
+            . "Sec-WebSocket-Protocol: wamp.2.json\r\n"
+            . 'Origin: http://' . $Host . ':47365' . "\r\n"
+            . "\r\n";
+        fwrite($this->socket, $request);
+
+        $response = '';
+        $deadline = microtime(true) + $Timeout;
+        while (strpos($response, "\r\n\r\n") === false && microtime(true) < $deadline) {
+            $chunk = fread($this->socket, 1024);
+            if ($chunk === false || $chunk === '') {
+                break;
+            }
+            $response .= $chunk;
+        }
+        if (strpos($response, ' 101 ') === false) {
+            $this->close();
+            return false;
+        }
+
+        $split = strpos($response, "\r\n\r\n");
+        $this->buffer = substr($response, $split + 4);
+
+        $hello = [1, 'raumfeld', [
+            'agent' => 'ips-raumfeld',
+            'roles' => [
+                'subscriber' => new stdClass(),
+                'caller' => ['features' => ['call_timeout' => true]],
+            ],
+        ]];
+        if (!$this->send($hello)) {
+            $this->close();
+            return false;
+        }
+        $welcome = $this->receive($Timeout);
+        if (!is_array($welcome) || ($welcome[0] ?? 0) !== 2) {
+            $this->close();
+            return false;
+        }
+        return true;
+    }
+
+    public function close(): void
+    {
+        if ($this->socket !== null) {
+            @fclose($this->socket);
+            $this->socket = null;
+        }
+        $this->buffer = '';
+    }
+
+    /**
+     * Ruft ein Thema auf. Liefert den ersten Ergebniswert oder null.
+     */
+    public function call(string $Topic, array $Args = ['get'], int $Timeout = 8)
+    {
+        $this->requestId++;
+        $request = $this->requestId;
+        if (!$this->send([48, $request, ['timeout' => 1800], $Topic, $Args])) {
+            return null;
+        }
+
+        $deadline = microtime(true) + $Timeout;
+        while (microtime(true) < $deadline) {
+            $message = $this->receive($Timeout);
+            if ($message === null) {
+                continue;
+            }
+            if (($message[0] ?? 0) === 50 && ($message[1] ?? 0) === $request) {
+                return $message[3][0] ?? null;
+            }
+            if (($message[0] ?? 0) === 8 && ($message[2] ?? 0) === $request) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public function get(string $Topic)
+    {
+        return $this->call($Topic, ['get']);
+    }
+
+    public function set(string $Topic, $Value)
+    {
+        return $this->call($Topic, ['set', $Value]);
+    }
+
+    // ------------------------------------------------------------ Frames
+
+    private function send(array $Payload): bool
+    {
+        if ($this->socket === null) {
+            return false;
+        }
+        $data = json_encode($Payload);
+        if ($data === false) {
+            return false;
+        }
+        $length = strlen($data);
+
+        $frame = chr(0x81);
+        if ($length < 126) {
+            $frame .= chr(0x80 | $length);
+        } elseif ($length < 65536) {
+            $frame .= chr(0x80 | 126) . pack('n', $length);
+        } else {
+            $frame .= chr(0x80 | 127) . pack('J', $length);
+        }
+
+        $mask = random_bytes(4);
+        $frame .= $mask;
+        for ($i = 0; $i < $length; $i++) {
+            $frame .= $data[$i] ^ $mask[$i % 4];
+        }
+
+        return @fwrite($this->socket, $frame) !== false;
+    }
+
+    private function receive(int $Timeout): ?array
+    {
+        $deadline = microtime(true) + $Timeout;
+        while (microtime(true) < $deadline) {
+            $frame = $this->readFrame($deadline);
+            if ($frame === null) {
+                return null;
+            }
+            $opcode = $frame['opcode'];
+            if ($opcode === 0x8) {
+                return null;
+            }
+            if ($opcode === 0x9) {
+                $this->sendControl(0xA, $frame['payload']);
+                continue;
+            }
+            if ($opcode === 0x1 || $opcode === 0x2) {
+                $decoded = json_decode($frame['payload'], true);
+                return is_array($decoded) ? $decoded : null;
+            }
+        }
+        return null;
+    }
+
+    private function sendControl(int $Opcode, string $Payload): void
+    {
+        if ($this->socket === null) {
+            return;
+        }
+        $length = strlen($Payload);
+        $frame = chr(0x80 | $Opcode) . chr(0x80 | $length);
+        $mask = random_bytes(4);
+        $frame .= $mask;
+        for ($i = 0; $i < $length; $i++) {
+            $frame .= $Payload[$i] ^ $mask[$i % 4];
+        }
+        @fwrite($this->socket, $frame);
+    }
+
+    private function readFrame(float $Deadline): ?array
+    {
+        while (strlen($this->buffer) < 2) {
+            if (!$this->fill($Deadline)) {
+                return null;
+            }
+        }
+
+        $first = ord($this->buffer[0]);
+        $second = ord($this->buffer[1]);
+        $opcode = $first & 0x0F;
+        $masked = ($second & 0x80) !== 0;
+        $length = $second & 0x7F;
+        $offset = 2;
+
+        if ($length === 126) {
+            while (strlen($this->buffer) < 4) {
+                if (!$this->fill($Deadline)) {
+                    return null;
+                }
+            }
+            $length = unpack('n', substr($this->buffer, 2, 2))[1];
+            $offset = 4;
+        } elseif ($length === 127) {
+            while (strlen($this->buffer) < 10) {
+                if (!$this->fill($Deadline)) {
+                    return null;
+                }
+            }
+            $length = unpack('J', substr($this->buffer, 2, 8))[1];
+            $offset = 10;
+        }
+
+        $maskKey = '';
+        if ($masked) {
+            while (strlen($this->buffer) < $offset + 4) {
+                if (!$this->fill($Deadline)) {
+                    return null;
+                }
+            }
+            $maskKey = substr($this->buffer, $offset, 4);
+            $offset += 4;
+        }
+
+        while (strlen($this->buffer) < $offset + $length) {
+            if (!$this->fill($Deadline)) {
+                return null;
+            }
+        }
+
+        $payload = substr($this->buffer, $offset, $length);
+        $this->buffer = substr($this->buffer, $offset + $length);
+
+        if ($masked) {
+            for ($i = 0; $i < $length; $i++) {
+                $payload[$i] = $payload[$i] ^ $maskKey[$i % 4];
+            }
+        }
+
+        return ['opcode' => $opcode, 'payload' => $payload];
+    }
+
+    private function fill(float $Deadline): bool
+    {
+        if ($this->socket === null) {
+            return false;
+        }
+        $remaining = $Deadline - microtime(true);
+        if ($remaining <= 0) {
+            return false;
+        }
+        $seconds = (int) floor($remaining);
+        $micros = (int) (($remaining - $seconds) * 1000000);
+        stream_set_timeout($this->socket, $seconds, $micros);
+        $chunk = @fread($this->socket, 8192);
+        if ($chunk === false || $chunk === '') {
+            $meta = stream_get_meta_data($this->socket);
+            if (!empty($meta['timed_out'])) {
+                return false;
+            }
+            return false;
+        }
+        $this->buffer .= $chunk;
+        return true;
     }
 }
