@@ -1,0 +1,12 @@
+{
+    "id": "{A7B3C1D2-4E5F-4A6B-8C9D-0E1F2A3B4C62}",
+    "name": "Raumfeld Configurator",
+    "type": 4,
+    "vendor": "Teufel",
+    "aliases": ["Raumfeld Host", "Teufel Raumfeld Host"],
+    "url": "https://github.com/TtodaH/IPS-Raumfeld",
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "RFC"
+}
