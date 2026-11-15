@@ -32,8 +32,6 @@
     if (text) { root.style.setProperty('--text', 'rgb(' + text.r + ',' + text.g + ',' + text.b + ')'); }
 })();
 </script>
-<!-- IP-Symcon Icon-Set (FontAwesome). Ohne diese Zeile bleiben alle Icons leer. -->
-<script src="/icons.js" crossorigin="anonymous"></script>
 
 <style>
 :root {
@@ -41,114 +39,108 @@
     --card: #1b1d22;
     --text: #f4f6f8;
     --muted: #98a2b3;
-    --track: rgba(255,255,255,0.14);
+    --track: rgba(255,255,255,0.16);
     --chip: rgba(255,255,255,0.07);
-    --chip-border: rgba(255,255,255,0.12);
+    --chip-border: rgba(255,255,255,0.13);
 }
 :root[data-theme="light"] {
     --card: #ffffff;
     --text: #111827;
     --muted: #5b6472;
-    --track: rgba(17,24,39,0.14);
+    --track: rgba(17,24,39,0.16);
     --chip: rgba(17,24,39,0.05);
-    --chip-border: rgba(17,24,39,0.12);
+    --chip-border: rgba(17,24,39,0.13);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; user-select: none; }
 html, body { width: 100%; height: 100%; overflow: hidden; background: var(--card); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
 .tile {
-    container-type: size;
     width: 100%; height: 100%;
     display: flex; flex-direction: column;
-    gap: clamp(2px, 1cqh, 8px);
-    padding: clamp(6px, 2.6cqw, 12px);
+    gap: 5px;
+    padding: 7px 9px;
     overflow: hidden;
 }
 
 /* ---------- Kopfzeile ---------- */
-.head { display: flex; align-items: center; gap: clamp(4px, 1.6cqw, 9px); flex-shrink: 0; min-width: 0; }
-.icon {
-    width: clamp(22px, 7cqmin, 30px); height: clamp(22px, 7cqmin, 30px);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    border-radius: 7px; font-size: clamp(11px, 3.4cqmin, 15px);
-    background: color-mix(in srgb, var(--accent) 18%, transparent);
-    color: var(--accent);
+.head {
+    display: flex; align-items: center; gap: 6px;
+    flex-shrink: 0; min-width: 0; overflow: hidden;
 }
-.titles { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; }
-.title { font-size: clamp(11px, 3.2cqmin, 14px); font-weight: 700; line-height: 1.15;
+.titles { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; overflow: hidden; }
+.title { font-size: 14px; font-weight: 700; line-height: 1.2;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sub { font-size: clamp(9px, 2.6cqmin, 11px); color: var(--muted); line-height: 1.15; margin-top: 1px;
+.sub { font-size: 11px; color: var(--muted); line-height: 1.2; margin-top: 1px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .hbtn {
-    flex-shrink: 0; cursor: pointer; outline: none;
-    width: clamp(26px, 8cqmin, 34px); height: clamp(26px, 8cqmin, 34px);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: clamp(11px, 3.5cqmin, 14px);
+    flex: 0 0 auto; cursor: pointer; outline: none;
+    width: 30px; height: 30px; padding: 0;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; line-height: 1;
     background: var(--chip); color: var(--muted);
     border: 1px solid var(--chip-border);
     transition: background .15s ease, color .15s ease, border-color .15s ease;
+    font-family: inherit;
 }
 .hbtn:active { transform: scale(0.94); }
 .hbtn.on { background: color-mix(in srgb, var(--accent) 26%, transparent); color: var(--accent);
     border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
-.hbtn.mute-on { background: color-mix(in srgb, #ff6b6b 24%, transparent); color: #ff8f8f;
+.hbtn.mute-on { background: color-mix(in srgb, #ff6b6b 24%, transparent); color: #ff9a9a;
     border-color: rgba(255,107,107,0.45); }
 
 /* ---------- Mittelteil ---------- */
 .body { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center;
-    gap: clamp(2px, 1.1cqh, 8px); min-height: 0; }
-.row { display: flex; align-items: center; gap: clamp(4px, 1.6cqw, 9px); min-width: 0; }
-.row .lbl { font-size: clamp(9px, 2.6cqmin, 11px); color: var(--muted);
-    width: clamp(36px, 12cqmin, 58px); flex-shrink: 0; }
-.value { font-size: clamp(10px, 2.9cqmin, 12px); font-variant-numeric: tabular-nums;
-    width: clamp(30px, 10cqmin, 44px); text-align: right; flex-shrink: 0; }
+    gap: 5px; min-height: 0; overflow: hidden; }
+.row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.row .lbl { font-size: 11px; color: var(--muted); width: 46px; flex: 0 0 auto; }
+.value { font-size: 12px; font-variant-numeric: tabular-nums; width: 38px;
+    text-align: right; flex: 0 0 auto; }
 
-input[type=range] { -webkit-appearance: none; appearance: none; flex: 1; min-width: 0;
-    height: clamp(18px, 5cqh, 26px); background: transparent; cursor: pointer; }
+input[type=range] { -webkit-appearance: none; appearance: none; flex: 1 1 auto; min-width: 0;
+    height: 22px; background: transparent; cursor: pointer; margin: 0; }
 input[type=range]::-webkit-slider-runnable-track { height: 5px; border-radius: 3px; background: var(--track); }
 input[type=range]::-webkit-slider-thumb { -webkit-appearance: none;
-    width: clamp(14px, 4.4cqmin, 20px); height: clamp(14px, 4.4cqmin, 20px);
-    border-radius: 50%; background: var(--accent); border: none;
-    margin-top: calc(-1 * (clamp(14px, 4.4cqmin, 20px) - 5px) / 2); }
+    width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: none;
+    margin-top: -5.5px; }
 input[type=range]::-moz-range-track { height: 5px; border-radius: 3px; background: var(--track); }
-input[type=range]::-moz-range-thumb { width: clamp(14px, 4.4cqmin, 20px); height: clamp(14px, 4.4cqmin, 20px);
-    border-radius: 50%; background: var(--accent); border: none; }
+input[type=range]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); border: none; }
 
-select { flex: 1; min-width: 0; cursor: pointer; outline: none;
-    padding: clamp(3px, 1.1cqh, 7px) clamp(5px, 1.8cqw, 9px);
-    border-radius: 7px; font-size: clamp(10px, 2.9cqmin, 12px);
-    background: var(--chip); color: var(--text); border: 1px solid var(--chip-border); }
+select { flex: 1 1 auto; min-width: 0; cursor: pointer; outline: none;
+    padding: 4px 7px; border-radius: 6px; font-size: 12px;
+    background: var(--chip); color: var(--text); border: 1px solid var(--chip-border);
+    font-family: inherit; }
 
 /* ---------- Wiedergabe ---------- */
-.foot { display: flex; align-items: center; gap: clamp(3px, 1.2cqw, 7px); flex-shrink: 0; }
+.foot { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .pbtn {
-    flex: 1; min-width: 0; cursor: pointer; outline: none;
+    flex: 1 1 0; min-width: 0; cursor: pointer; outline: none; padding: 0;
     border: 1px solid var(--chip-border); background: var(--chip); color: var(--text);
-    border-radius: 8px; display: flex; align-items: center; justify-content: center;
-    height: clamp(24px, 7.5cqh, 36px); font-size: clamp(11px, 3.4cqmin, 15px);
+    border-radius: 7px; display: flex; align-items: center; justify-content: center;
+    height: 30px; font-size: 14px; line-height: 1;
     transition: background .15s ease, color .15s ease, border-color .15s ease;
+    font-family: inherit;
 }
 .pbtn:active { transform: scale(0.95); filter: brightness(1.25); }
 .pbtn.active { background: color-mix(in srgb, var(--accent) 24%, transparent); color: var(--accent);
     border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
 
-.status { font-size: clamp(8px, 2.3cqmin, 10px); color: var(--muted); text-align: center;
-    flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
 .hide { display: none !important; }
 
-/* ---------- Anpassung an kleine Kacheln ---------- */
-@container (max-height: 150px) {
-    .status { display: none; }
-}
-@container (max-height: 120px) {
+/* ---------- Kleine Kacheln ---------- */
+@media (max-height: 170px) {
     .foot { display: none; }
 }
-@container (max-width: 190px) {
+@media (max-height: 130px) {
+    .body { justify-content: flex-start; }
     .row .lbl { display: none; }
-    .sub { display: none; }
+}
+@media (max-width: 220px) {
+    .row .lbl { display: none; }
+    .value { width: 32px; }
 }
 </style>
 </head>
@@ -156,13 +148,12 @@ select { flex: 1; min-width: 0; cursor: pointer; outline: none;
 <div class="tile">
 
     <div class="head">
-        <div class="icon"><i class="fa-solid fa-volume-high" id="headIcon"></i></div>
         <div class="titles">
             <div class="title" id="tTitle">Raumfeld</div>
             <div class="sub" id="tSub"></div>
         </div>
-        <button class="hbtn" id="btnMute" title="Stumm"><i class="fa-solid fa-volume-xmark"></i></button>
-        <button class="hbtn" id="btnPower" title="Ein/Aus"><i class="fa-solid fa-power-off"></i></button>
+        <button class="hbtn" id="btnMute" title="Stumm">&#128263;</button>
+        <button class="hbtn" id="btnPower" title="Ein/Aus">&#9211;</button>
     </div>
 
     <div class="body">
@@ -178,22 +169,28 @@ select { flex: 1; min-width: 0; cursor: pointer; outline: none;
     </div>
 
     <div class="foot" id="rowPlay">
-        <button class="pbtn" id="btnPrev"><i class="fa-solid fa-backward-step"></i></button>
-        <button class="pbtn" id="btnPlay"><i class="fa-solid fa-play"></i></button>
-        <button class="pbtn" id="btnStop"><i class="fa-solid fa-stop"></i></button>
-        <button class="pbtn" id="btnNext"><i class="fa-solid fa-forward-step"></i></button>
+        <button class="pbtn" id="btnPrev" title="Zurueck">&#9198;</button>
+        <button class="pbtn" id="btnPlay" title="Wiedergabe">&#9654;</button>
+        <button class="pbtn" id="btnStop" title="Stop">&#9632;</button>
+        <button class="pbtn" id="btnNext" title="Weiter">&#9197;</button>
     </div>
 
-    <div class="status" id="status"></div>
 </div>
 
 <script>
-var state = { power: false, volume: 0, mute: false, source: 0, sources: {}, transport: '' };
+var state = { power: false, volume: 0, mute: false, source: 0, sources: {}, transport: '', status: '' };
 var volTimer = null;
 
 function setText(id, v) {
     var el = document.getElementById(id);
     if (el && el.textContent !== String(v)) { el.textContent = v; }
+}
+
+function buildSubtitle(p) {
+    var parts = [];
+    if (p.subtitle) { parts.push(p.subtitle); }
+    if (p.status) { parts.push(p.status); }
+    return parts.join(' \u00b7 ');
 }
 
 function handleMessage(data) {
@@ -205,13 +202,12 @@ function handleMessage(data) {
 
     if (p.accentColor) { document.documentElement.style.setProperty('--accent', p.accentColor); }
     if (p.title !== undefined) { setText('tTitle', p.title); }
-    if (p.subtitle !== undefined) { setText('tSub', p.subtitle); }
 
     var btnPower = document.getElementById('btnPower');
     var btnMute = document.getElementById('btnMute');
 
     if (!p.available) {
-        setText('status', p.status || 'Keine Renderer-Instanz');
+        setText('tSub', p.status || 'Keine Renderer-Instanz');
         btnPower.classList.remove('on');
         return;
     }
@@ -222,8 +218,12 @@ function handleMessage(data) {
     state.source = p.source | 0;
     state.sources = p.sources || {};
     state.transport = p.transport || '';
+    state.status = p.status || '';
+
+    setText('tSub', buildSubtitle(p));
 
     btnPower.classList.toggle('on', state.power);
+    btnPower.innerHTML = state.power ? '&#9211;' : '&#9211;';
     btnMute.classList.toggle('mute-on', state.mute);
     btnMute.classList.toggle('hide', !p.showMute);
 
@@ -246,18 +246,9 @@ function handleMessage(data) {
     if (sel.value !== String(state.source)) { sel.value = String(state.source); }
 
     var playing = state.transport === 'PLAYING';
-    var icon = document.querySelector('#btnPlay i');
-    if (icon) { icon.className = playing ? 'fa-solid fa-pause' : 'fa-solid fa-play'; }
-    document.getElementById('btnPlay').classList.toggle('active', playing);
-
-    // Kopf-Icon spiegelt den Zustand
-    var headIcon = document.getElementById('headIcon');
-    if (headIcon) {
-        headIcon.className = state.mute ? 'fa-solid fa-volume-xmark'
-            : (playing ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-low');
-    }
-
-    setText('status', p.status || '');
+    var btnPlay = document.getElementById('btnPlay');
+    btnPlay.innerHTML = playing ? '&#10074;&#10074;' : '&#9654;';
+    btnPlay.classList.toggle('active', playing);
 }
 
 function send(ident, value) {
@@ -269,7 +260,6 @@ function send(ident, value) {
 }
 
 document.getElementById('btnPower').addEventListener('click', function () { send('power', !state.power); });
-
 document.getElementById('btnMute').addEventListener('click', function () { send('mute', !state.mute); });
 
 document.getElementById('vol').addEventListener('input', function () {
@@ -287,13 +277,10 @@ document.getElementById('src').addEventListener('change', function () {
 });
 
 document.getElementById('btnPrev').addEventListener('click', function () { send('playback', 0); });
-
 document.getElementById('btnPlay').addEventListener('click', function () {
     send('playback', state.transport === 'PLAYING' ? 3 : 2);
 });
-
 document.getElementById('btnStop').addEventListener('click', function () { send('playback', 1); });
-
 document.getElementById('btnNext').addEventListener('click', function () { send('playback', 4); });
 
 if (window.__INITIAL_DATA__) { handleMessage(window.__INITIAL_DATA__); }
