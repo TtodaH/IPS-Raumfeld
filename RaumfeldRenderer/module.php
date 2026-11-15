@@ -43,8 +43,13 @@ class RaumfeldRenderer extends IPSModuleStrict
         // Eingangsquelle). Standard aus, weil die eigene Kachel diese
         // Funktionen bereits abdeckt und sonst Doppelungen entstehen.
         $this->RegisterPropertyBoolean('ControlVariables', false);
+        // Anzahl Fehlversuche, bevor Status 201 gesetzt wird (Entprellung).
+        $this->RegisterPropertyInteger('FailureThreshold', 3);
 
         $this->RegisterAttributeString('RendererLocation', '');
+        // Entprellung: Anzahl Fehlversuche in Folge. Ein einzelner Aussetzer
+        // des Geraetedienstes soll den Status nicht sofort auf 201 setzen.
+        $this->RegisterAttributeInteger('FailureCount', 0);
 
         $this->RegisterTimer('RFUpdate', 0, 'RFR_UpdateState($_IPS[\'TARGET\']);');
     }
@@ -139,11 +144,11 @@ class RaumfeldRenderer extends IPSModuleStrict
         }
 
         if (!$this->RFResolveRenderer()) {
-            $this->SetStatus(201);
+            $this->RFMarkFailure();
             return;
         }
 
-        $this->SetStatus(IS_ACTIVE);
+        $this->RFMarkSuccess();
 
         $this->RFUpdateState();
         if ($this->ReadPropertyBoolean('ControlVariables')) {
@@ -201,10 +206,10 @@ class RaumfeldRenderer extends IPSModuleStrict
     {
         $this->WriteAttributeString('RendererLocation', '');
         if ($this->RFResolveRenderer()) {
-            $this->SetStatus(IS_ACTIVE);
+            $this->RFMarkSuccess();
             $this->RFUpdateState();
         } else {
-            $this->SetStatus(201);
+            $this->RFMarkFailure();
         }
     }
 
@@ -328,11 +333,13 @@ class RaumfeldRenderer extends IPSModuleStrict
             $this->SetValue('Playback', $this->RFPlaybackFromTransport($transport));
         }
 
-        // Selbstheilung: antwortet das Geraet, ist ein alter Fehlerstatus hinfaellig.
+        // Entprellung: antwortet das Geraet, Fehlerzaehler zuruecksetzen und einen
+        // alten Fehlerstatus aufheben. Antwortet nichts, erst nach mehreren
+        // Fehlversuchen in Folge auf 201 gehen.
         if ($volume !== '' || $mute !== '' || $transport !== '') {
-            if ($this->GetStatus() === 201) {
-                $this->SetStatus(IS_ACTIVE);
-            }
+            $this->RFMarkSuccess();
+        } else {
+            $this->RFMarkFailure();
         }
 
         $power = $this->RFRoomPowerState();
@@ -713,6 +720,42 @@ class RaumfeldRenderer extends IPSModuleStrict
      * Deshalb drei Stufen: exakte UDN, Renderer des konfigurierten Raums,
      * einziger MediaRenderer. Gefundene UDN wird als Property uebernommen.
      */
+    /**
+     * Meldet einen erfolgreichen Zugriff: Zaehler zuruecksetzen und einen
+     * alten Fehlerstatus aufheben.
+     */
+    private function RFMarkSuccess(): void
+    {
+        if ($this->ReadAttributeInteger('FailureCount') !== 0) {
+            $this->WriteAttributeInteger('FailureCount', 0);
+        }
+        if ($this->GetStatus() === 201) {
+            $this->SetStatus(IS_ACTIVE);
+        }
+    }
+
+    /**
+     * Meldet einen fehlgeschlagenen Zugriff. Status 201 erst nach mehreren
+     * Fehlversuchen in Folge, damit kurze Aussetzer des Geraetedienstes den
+     * Status nicht flackern lassen.
+     */
+    private function RFMarkFailure(): void
+    {
+        $count = $this->ReadAttributeInteger('FailureCount') + 1;
+        $this->WriteAttributeInteger('FailureCount', $count);
+
+        $threshold = $this->ReadPropertyInteger('FailureThreshold');
+        if ($threshold < 1) {
+            $threshold = 3;
+        }
+
+        $this->SendDebug('Renderer', 'Fehlversuch ' . $count . ' von ' . $threshold, 0);
+
+        if ($count >= $threshold) {
+            $this->SetStatus(201);
+        }
+    }
+
     private function RFResolveRenderer(): bool
     {
         $host = trim($this->ReadPropertyString('Host'));

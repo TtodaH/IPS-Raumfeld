@@ -48,6 +48,13 @@
                     "type": "CheckBox",
                     "name": "PowerVariable",
                     "caption": "Ein/Aus als eigene Variable (schaltet die Kachel auf Licht um)"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "FailureThreshold",
+                    "caption": "Fehlversuche bis Status 201 (Entprellung)",
+                    "minimum": 1,
+                    "maximum": 10
                 }
             ]
         }
