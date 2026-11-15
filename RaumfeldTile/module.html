@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Raumfeld</title>
+<script>
+(function () {
+    'use strict';
+    function parseHex(v) {
+        if (!v) return null;
+        var h = String(v).trim();
+        if (h.charAt(0) === '#') h = h.substring(1);
+        if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+        if (!/^[0-9a-f]{6}$/i.test(h)) return null;
+        return { r: parseInt(h.substr(0, 2), 16), g: parseInt(h.substr(2, 2), 16), b: parseInt(h.substr(4, 2), 16) };
+    }
+    function lum(c) {
+        function ch(x) { x = x / 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }
+        return 0.2126 * ch(c.r) + 0.7152 * ch(c.g) + 0.0722 * ch(c.b);
+    }
+    var p = new URLSearchParams(window.location.search);
+    var card = parseHex(p.get('cardcolor'));
+    var text = parseHex(p.get('textcolor'));
+    var isLight = null;
+    if (card) { isLight = lum(card) > 0.45; }
+    else if (text) { isLight = lum(text) < 0.45; }
+    else if (window.matchMedia) { isLight = window.matchMedia('(prefers-color-scheme: light)').matches; }
+    var root = document.documentElement;
+    root.setAttribute('data-theme', isLight ? 'light' : 'dark');
+    if (card) { root.style.setProperty('--card', 'rgb(' + card.r + ',' + card.g + ',' + card.b + ')'); }
+    if (text) { root.style.setProperty('--text', 'rgb(' + text.r + ',' + text.g + ',' + text.b + ')'); }
+})();
+</script>
+<style>
+:root {
+    --accent: #00CDAB;
+    --card: #1b1d22;
+    --text: #f4f6f8;
+    --muted: #98a2b3;
+    --track: rgba(255,255,255,0.14);
+    --chip: rgba(255,255,255,0.07);
+    --chip-border: rgba(255,255,255,0.12);
+}
+:root[data-theme="light"] {
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #5b6472;
+    --track: rgba(17,24,39,0.14);
+    --chip: rgba(17,24,39,0.05);
+    --chip-border: rgba(17,24,39,0.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; user-select: none; }
+html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    background: var(--card); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+.tile {
+    container-type: size;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; gap: clamp(4px, 1.6cqh, 10px);
+    padding: clamp(8px, 3cqw, 14px);
+}
+.head { display: flex; align-items: center; gap: clamp(6px, 2cqw, 10px); flex-shrink: 0; min-width: 0; }
+.icon {
+    width: clamp(26px, 8cqw, 34px); height: clamp(26px, 8cqw, 34px);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    border-radius: 8px; font-size: clamp(13px, 4cqw, 17px);
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    color: var(--accent);
+}
+.titles { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; }
+.title { font-size: clamp(12px, 3.6cqw, 15px); font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sub { font-size: clamp(10px, 3cqw, 12px); color: var(--muted); line-height: 1.2; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.power {
+    flex-shrink: 0; cursor: pointer; outline: none;
+    width: clamp(34px, 11cqw, 44px); height: clamp(34px, 11cqw, 44px);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: clamp(14px, 4.6cqw, 19px);
+    background: var(--chip); color: var(--muted);
+    border: 1px solid var(--chip-border);
+    transition: all .18s ease;
+}
+.power.on { background: color-mix(in srgb, var(--accent) 26%, transparent); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.power:active { transform: scale(0.94); }
+.body { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; gap: clamp(4px, 1.4cqh, 9px); min-height: 0; }
+.row { display: flex; align-items: center; gap: clamp(6px, 2cqw, 10px); }
+.row .lbl { font-size: clamp(10px, 3cqw, 12px); color: var(--muted); width: clamp(48px, 16cqw, 70px); flex-shrink: 0; }
+.value { font-size: clamp(11px, 3.3cqw, 13px); font-variant-numeric: tabular-nums; width: clamp(38px, 12cqw, 52px); text-align: right; flex-shrink: 0; }
+input[type=range] { -webkit-appearance: none; appearance: none; flex: 1; min-width: 0; height: clamp(20px, 6cqh, 28px); background: transparent; cursor: pointer; }
+input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--track); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: clamp(16px, 5cqw, 22px); height: clamp(16px, 5cqw, 22px); border-radius: 50%; background: var(--accent); margin-top: calc(-1 * (clamp(16px, 5cqw, 22px) - 6px) / 2); border: none; }
+input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--track); }
+input[type=range]::-moz-range-thumb { width: clamp(16px, 5cqw, 22px); height: clamp(16px, 5cqw, 22px); border-radius: 50%; background: var(--accent); border: none; }
+select {
+    flex: 1; min-width: 0; cursor: pointer; outline: none;
+    padding: clamp(4px, 1.4cqh, 8px) clamp(6px, 2cqw, 10px);
+    border-radius: 8px; font-size: clamp(11px, 3.2cqw, 13px);
+    background: var(--chip); color: var(--text); border: 1px solid var(--chip-border);
+}
+.foot { display: flex; align-items: center; justify-content: space-between; gap: clamp(4px, 1.6cqw, 9px); flex-shrink: 0; }
+.pbtn {
+    flex: 1; border: 1px solid var(--chip-border); background: var(--chip); color: var(--text);
+    border-radius: 9px; cursor: pointer; outline: none;
+    height: clamp(30px, 8.5cqh, 40px); font-size: clamp(13px, 4cqw, 17px);
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s ease;
+}
+.pbtn:active { transform: scale(0.95); filter: brightness(1.25); }
+.pbtn.active { background: color-mix(in srgb, var(--accent) 24%, transparent); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+.mute.on { background: color-mix(in srgb, #ff6b6b 22%, transparent); color: #ff8080; border-color: rgba(255,107,107,0.45); }
+.hide { display: none !important; }
+.status { font-size: clamp(9px, 2.7cqw, 11px); color: var(--muted); text-align: center; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+</style>
+</head>
+<body>
+<div class="tile">
+    <div class="head">
+        <div class="icon"><i class="fa-solid fa-volume-high"></i></div>
+        <div class="titles">
+            <div class="title" id="tTitle">Raumfeld</div>
+            <div class="sub" id="tSub"></div>
+        </div>
+        <button class="power" id="btnPower"><i class="fa-solid fa-power-off"></i></button>
+    </div>
+
+    <div class="body">
+        <div class="row" id="rowVolume">
+            <span class="lbl">Lautst.</span>
+            <input type="range" id="vol" min="0" max="100" step="1">
+            <span class="value" id="volVal">--</span>
+        </div>
+        <div class="row" id="rowSource">
+            <span class="lbl">Quelle</span>
+            <select id="src"></select>
+        </div>
+        <div class="row hide" id="rowMute">
+            <span class="lbl">Stumm</span>
+            <button class="pbtn mute" id="btnMute"><i class="fa-solid fa-volume-xmark"></i></button>
+        </div>
+    </div>
+
+    <div class="foot hide" id="rowPlay">
+        <button class="pbtn" id="btnPrev"><i class="fa-solid fa-backward-step"></i></button>
+        <button class="pbtn" id="btnPlay"><i class="fa-solid fa-play"></i></button>
+        <button class="pbtn" id="btnStop"><i class="fa-solid fa-stop"></i></button>
+        <button class="pbtn" id="btnNext"><i class="fa-solid fa-forward-step"></i></button>
+    </div>
+
+    <div class="status" id="status"></div>
+</div>
+
+<script>
+var state = { power: false, volume: 0, mute: false, source: 0, sources: {}, transport: '' };
+var volTimer = null;
+
+function setText(id, v) {
+    var el = document.getElementById(id);
+    if (el && el.textContent !== String(v)) { el.textContent = v; }
+}
+
+function handleMessage(data) {
+    if (!data) { return; }
+    var p = data;
+    if (typeof data === 'string') {
+        try { p = JSON.parse(data); } catch (e) { return; }
+    }
+
+    if (p.accentColor) { document.documentElement.style.setProperty('--accent', p.accentColor); }
+    if (p.title !== undefined) { setText('tTitle', p.title); }
+    if (p.subtitle !== undefined) { setText('tSub', p.subtitle); }
+
+    if (!p.available) {
+        setText('status', p.status || 'Keine Renderer-Instanz');
+        return;
+    }
+
+    state.power = !!p.power;
+    state.volume = p.volume | 0;
+    state.mute = !!p.mute;
+    state.source = p.source | 0;
+    state.sources = p.sources || {};
+    state.transport = p.transport || '';
+
+    document.getElementById('btnPower').classList.toggle('on', state.power);
+
+    document.getElementById('rowVolume').classList.toggle('hide', !p.showVolume);
+    document.getElementById('rowSource').classList.toggle('hide', !p.showSource);
+    document.getElementById('rowMute').classList.toggle('hide', !p.showMute);
+    document.getElementById('rowPlay').classList.toggle('hide', !p.showPlayback);
+
+    if (!volTimer) {
+        document.getElementById('vol').value = state.volume;
+        setText('volVal', state.volume + ' %');
+    }
+
+    var sel = document.getElementById('src');
+    var keys = Object.keys(state.sources);
+    if (sel.options.length !== keys.length) {
+        sel.innerHTML = keys.map(function (k) {
+            return '<option value="' + k + '">' + state.sources[k] + '</option>';
+        }).join('');
+    }
+    if (sel.value !== String(state.source)) { sel.value = String(state.source); }
+
+    document.getElementById('btnMute').classList.toggle('on', state.mute);
+
+    var playing = state.transport === 'PLAYING';
+    var icon = document.querySelector('#btnPlay i');
+    if (icon) { icon.className = playing ? 'fa-solid fa-pause' : 'fa-solid fa-play'; }
+    document.getElementById('btnPlay').classList.toggle('active', playing);
+
+    setText('status', p.status || '');
+}
+
+function send(ident, value) {
+    if (typeof requestAction === 'function') {
+        requestAction(ident, value);
+    } else {
+        console.log('[Preview] ' + ident + ' = ' + value);
+    }
+}
+
+document.getElementById('btnPower').addEventListener('click', function () {
+    send('power', !state.power);
+});
+
+document.getElementById('vol').addEventListener('input', function () {
+    setText('volVal', this.value + ' %');
+    if (volTimer) { clearTimeout(volTimer); }
+    volTimer = setTimeout(function () { volTimer = null; }, 1200);
+});
+
+document.getElementById('vol').addEventListener('change', function () {
+    send('volume', parseInt(this.value, 10));
+});
+
+document.getElementById('src').addEventListener('change', function () {
+    send('source', parseInt(this.value, 10));
+});
+
+document.getElementById('btnMute').addEventListener('click', function () {
+    send('mute', !state.mute);
+});
+
+document.getElementById('btnPrev').addEventListener('click', function () { send('playback', 0); });
+
+document.getElementById('btnPlay').addEventListener('click', function () {
+    send('playback', state.transport === 'PLAYING' ? 3 : 2);
+});
+
+document.getElementById('btnStop').addEventListener('click', function () { send('playback', 1); });
+
+document.getElementById('btnNext').addEventListener('click', function () { send('playback', 4); });
+
+if (window.__INITIAL_DATA__) { handleMessage(window.__INITIAL_DATA__); }
+</script>
+</body>
+</html>

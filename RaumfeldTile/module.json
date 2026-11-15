@@ -1,0 +1,12 @@
+{
+    "id": "{A7B3C1D2-4E5F-4A6B-8C9D-0E1F2A3B4C64}",
+    "name": "Raumfeld Tile",
+    "type": 3,
+    "vendor": "Teufel",
+    "aliases": ["Raumfeld Kachel", "Raumfeld Player Kachel"],
+    "url": "https://github.com/TtodaH/IPS-Raumfeld",
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "RFT"
+}

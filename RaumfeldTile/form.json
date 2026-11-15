@@ -1,0 +1,70 @@
+{
+    "elements": [
+        {
+            "type": "Label",
+            "caption": "Eigene Raumfeld-Kachel: Ein/Aus, Lautstaerke, Eingangsquelle und Wiedergabe in einer Kachel. Als Quelle die bestehende Raumfeld-Renderer-Instanz waehlen."
+        },
+        {
+            "type": "SelectInstance",
+            "name": "RendererInstance",
+            "caption": "Raumfeld Renderer-Instanz",
+            "validModules": ["{A7B3C1D2-4E5F-4A6B-8C9D-0E1F2A3B4C63}"]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Darstellung",
+            "expanded": true,
+            "items": [
+                {
+                    "type": "ValidationTextBox",
+                    "name": "TileTitle",
+                    "caption": "Titel"
+                },
+                {
+                    "type": "ValidationTextBox",
+                    "name": "TileSubtitle",
+                    "caption": "Untertitel (leer = Raumname)"
+                },
+                {
+                    "type": "SelectColor",
+                    "name": "AccentColor",
+                    "caption": "Akzentfarbe"
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Sichtbare Elemente",
+            "items": [
+                {
+                    "type": "CheckBox",
+                    "name": "ShowVolume",
+                    "caption": "Lautstaerkeregler"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "ShowSource",
+                    "caption": "Eingangsquelle"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "ShowMute",
+                    "caption": "Stummschaltung"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "ShowPlayback",
+                    "caption": "Wiedergabetasten"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "type": "Button",
+            "caption": "Kachel aktualisieren",
+            "onClick": "RFT_RefreshTile($id);"
+        }
+    ],
+    "status": []
+}
