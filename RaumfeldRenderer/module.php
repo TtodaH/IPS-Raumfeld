@@ -39,6 +39,10 @@ class RaumfeldRenderer extends IPSModuleStrict
         // Kombination Schalter + Helligkeitsregler von der Visu als Licht
         // erkannt wird und dann die Media-Player-Kachel verdraengt.
         $this->RegisterPropertyBoolean('PowerVariable', false);
+        // Eigene Steuerungsvariablen in der Kategorie (Ein/Aus, Lautstaerke,
+        // Eingangsquelle). Standard aus, weil die eigene Kachel diese
+        // Funktionen bereits abdeckt und sonst Doppelungen entstehen.
+        $this->RegisterPropertyBoolean('ControlVariables', false);
 
         $this->RegisterAttributeString('RendererLocation', '');
 
@@ -142,7 +146,9 @@ class RaumfeldRenderer extends IPSModuleStrict
         $this->SetStatus(IS_ACTIVE);
 
         $this->RFUpdateState();
-        $this->RFEnsureControlVariables();
+        if ($this->ReadPropertyBoolean('ControlVariables')) {
+            $this->RFEnsureControlVariables();
+        }
     }
 
     public function RequestAction(string $Ident, mixed $Value): void
