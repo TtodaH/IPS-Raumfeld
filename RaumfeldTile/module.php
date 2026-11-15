@@ -75,6 +75,22 @@ class RaumfeldTile extends IPSModule
             $this->RegisterMessage($variableID, VM_UPDATE);
         }
 
+        // Eigene Kindvariablen: Die Kachel braucht ein Ziel fuer die
+        // Detailansicht, sonst meldet die App "ungueltig Ziel ID". Sie
+        // spiegeln den Renderer-Zustand und sind dort auch bedienbar.
+        $this->MaintainVariable('TilePower', 'Ein/Aus', VARIABLETYPE_BOOLEAN, '~Switch', 1, true);
+        $this->MaintainVariable('TileVolume', 'Lautstaerke', VARIABLETYPE_INTEGER, 'Raumfeld.Volume', 2, true);
+        $this->MaintainVariable('TileSource', 'Eingangsquelle', VARIABLETYPE_INTEGER, 'Raumfeld.InputSource', 3, true);
+        $this->MaintainVariable('TileMute', 'Stumm', VARIABLETYPE_BOOLEAN, '~Mute', 4, true);
+        $this->MaintainVariable('TilePlayback', 'Wiedergabe', VARIABLETYPE_INTEGER, '~PlaybackPreviousNext', 5, true);
+        $this->MaintainVariable('TileStatus', 'Status', VARIABLETYPE_STRING, '', 6, true);
+
+        $this->EnableAction('TilePower');
+        $this->EnableAction('TileVolume');
+        $this->EnableAction('TileSource');
+        $this->EnableAction('TileMute');
+        $this->EnableAction('TilePlayback');
+
         $this->SetStatus(102);
         $this->SendTileUpdate();
     }
@@ -110,18 +126,23 @@ class RaumfeldTile extends IPSModule
 
         switch ($Ident) {
             case 'power':
+            case 'TilePower':
                 IPS_RequestAction($rendererID, 'Power', (bool) $Value);
                 break;
             case 'volume':
+            case 'TileVolume':
                 IPS_RequestAction($rendererID, 'Volume', (int) $Value);
                 break;
             case 'source':
+            case 'TileSource':
                 IPS_RequestAction($rendererID, 'InputSource', (int) $Value);
                 break;
             case 'mute':
+            case 'TileMute':
                 IPS_RequestAction($rendererID, 'Mute', (bool) $Value);
                 break;
             case 'playback':
+            case 'TilePlayback':
                 IPS_RequestAction($rendererID, 'Playback', (int) $Value);
                 break;
             case 'refresh':
@@ -143,8 +164,39 @@ class RaumfeldTile extends IPSModule
 
     private function SendTileUpdate(): void
     {
-        $data = json_encode($this->GetVisualizationData(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $this->UpdateVisualizationValue($data);
+        $payload = $this->GetVisualizationData();
+        $this->RFSyncTileVariables($payload);
+        $this->UpdateVisualizationValue(json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    }
+
+    /**
+     * Spiegelt den Renderer-Zustand in die Kindvariablen der Kachel.
+     * Nur bei Abweichung schreiben, damit keine Rueckkopplung entsteht.
+     */
+    private function RFSyncTileVariables(array $Payload): void
+    {
+        if (empty($Payload['available'])) {
+            return;
+        }
+
+        $values = [
+            'TilePower' => (bool) ($Payload['power'] ?? false),
+            'TileVolume' => (int) ($Payload['volume'] ?? 0),
+            'TileSource' => (int) ($Payload['source'] ?? 0),
+            'TileMute' => (bool) ($Payload['mute'] ?? false),
+            'TilePlayback' => (int) ($Payload['playback'] ?? 1),
+            'TileStatus' => (string) ($Payload['status'] ?? ''),
+        ];
+
+        foreach ($values as $ident => $value) {
+            $variableID = @$this->GetIDForIdent($ident);
+            if ($variableID <= 0) {
+                continue;
+            }
+            if (GetValue($variableID) !== $value) {
+                SetValue($variableID, $value);
+            }
+        }
     }
 
     /**
