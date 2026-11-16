@@ -39,11 +39,15 @@
 html, body { width: 100%; max-width: 100%; height: 100%; overflow: hidden; background: var(--card); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
-.tile { width: 100%; max-width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between;
-    gap: 3px; padding: 4px 7px; overflow: hidden; }
+.tile { height: 100%; display: flex; flex-direction: column; justify-content: space-between;
+    gap: 3px; padding: 4px 7px; box-sizing: border-box; overflow: hidden; }
 
-/* Der grosse Titel oben im Bild ist IP-Symcon-Chrome (Objektname) - hier nur Untertitel */
-.head { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; width: 100%; max-width: 100%; overflow: hidden; }
+/* Platzhalter fuer den IP-Symcon-Kacheltitel: Symcon zeichnet den Objektnamen
+   UEBER das HTML. Ohne diesen Platz wird der obere Inhalt verdeckt. */
+.spacer { flex: 0 0 auto; height: var(--spacer-h, 18px); }
+
+/* Kopfzeile: Untertitel links, Buttons rechts */
+.head { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; min-width: 0; max-width: 100%; overflow: hidden; }
 .sub { flex: 1 1 auto; min-width: 0; font-size: 11px; color: var(--muted); line-height: 1.2;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -56,12 +60,12 @@ html, body { width: 100%; max-width: 100%; height: 100%; overflow: hidden; backg
 .hbtn.mute-on { background: color-mix(in srgb, #ff6b6b 24%, transparent); color: #ff9a9a; border-color: rgba(255,107,107,.45); }
 
 .body { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; gap: 3px;
-    width: 100%; max-width: 100%; min-height: 0; overflow: hidden; }
-.row { display: flex; align-items: center; gap: 5px; width: 100%; max-width: 100%; min-width: 0; flex: 0 0 auto; }
+    min-width: 0; max-width: 100%; min-height: 0; overflow: hidden; }
+.row { display: flex; align-items: center; gap: 5px; min-width: 0; max-width: 100%; flex: 0 0 auto; }
 .lbl { font-size: 10px; color: var(--muted); flex: 0 0 40px; white-space: nowrap; }
 .value { font-size: 11px; font-variant-numeric: tabular-nums; flex: 0 0 32px; text-align: right; }
 
-input[type=range] { -webkit-appearance: none; appearance: none; flex: 1 1 auto; min-width: 0; width: 100%;
+input[type=range] { -webkit-appearance: none; appearance: none; flex: 1 1 auto; min-width: 0;
     max-width: 100%; height: 18px; margin: 0; background: transparent; cursor: pointer; }
 input[type=range]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--track); }
 input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
@@ -69,11 +73,11 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px;
 input[type=range]::-moz-range-track { height: 4px; border-radius: 2px; background: var(--track); }
 input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: none; }
 
-select { flex: 1 1 auto; min-width: 0; width: 100%; max-width: 100%; padding: 3px 5px; border-radius: 6px;
+select { flex: 1 1 auto; min-width: 0; max-width: 100%; padding: 3px 5px; border-radius: 6px;
     font-size: 11px; font-family: inherit; background: var(--chip); color: var(--text);
     border: 1px solid var(--chip-b); cursor: pointer; text-overflow: ellipsis; }
 
-.foot { display: flex; align-items: center; gap: 3px; flex: 0 0 auto; width: 100%; max-width: 100%; overflow: hidden; }
+.foot { display: flex; align-items: center; gap: 3px; flex: 0 0 auto; min-width: 0; max-width: 100%; overflow: hidden; }
 .pbtn { flex: 1 1 0; min-width: 0; height: 24px; padding: 0; border-radius: 6px; border: 1px solid var(--chip-b);
     background: var(--chip); color: var(--text); font-size: 11px; line-height: 1; cursor: pointer;
     display: flex; align-items: center; justify-content: center; font-family: inherit; }
@@ -90,6 +94,7 @@ body.lvl-micro .foot, body.lvl-micro .row-source, body.lvl-micro .lbl, body.lvl-
 </head>
 <body>
 <div class="tile">
+    <div class="spacer" id="spacer"></div>
     <div class="head">
         <div class="sub" id="tSub"></div>
         <button class="hbtn" id="btnMute" title="Stumm">&#128266;</button>
@@ -122,9 +127,14 @@ var ICON_MUTE = '&#128263;';
 function applyLevel() {
     var h = document.documentElement.clientHeight || window.innerHeight || 0;
     var b = document.body;
+
+    // Platz fuer den Symcon-Titel: skaliert mit der Hoehe, mindestens 18px
+    var spacer = Math.max(18, Math.min(h * 0.13, 34));
+    document.documentElement.style.setProperty('--spacer-h', spacer.toFixed(0) + 'px');
+
     b.classList.remove('lvl-tiny', 'lvl-micro');
-    if (h > 0 && h < 105) b.classList.add('lvl-micro');
-    else if (h > 0 && h < 150) b.classList.add('lvl-tiny');
+    if (h > 0 && h < 110) b.classList.add('lvl-micro');
+    else if (h > 0 && h < 155) b.classList.add('lvl-tiny');
 }
 if (window.ResizeObserver) new ResizeObserver(applyLevel).observe(document.documentElement);
 window.addEventListener('resize', applyLevel);
