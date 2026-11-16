@@ -28,6 +28,22 @@
 </script>
 <style>
 :root {
+    /* Groessen werden per JS aus der echten Kachelgroesse gesetzt (wie HeatingTile) */
+    --fs-sub: 14px;
+    --fs-lbl: 14px;
+    --fs-val: 16px;
+    --fs-select: 15px;
+    --btn-h: 48px;
+    --btn-w: 48px;
+    --btn-fs: 20px;
+    --pbtn-h: 48px;
+    --pbtn-fs: 20px;
+    --thumb: 24px;
+    --track: 6px;
+    --gap: 10px;
+    --spacer-h: 28px;
+    --pad-x: 14px;
+
     --accent: #00CDAB; --card: #1b1d22; --text: #f4f6f8; --muted: #98a2b3;
     --track: rgba(255,255,255,.16); --chip: rgba(255,255,255,.07); --chip-b: rgba(255,255,255,.13);
 }
@@ -50,10 +66,10 @@ body {
 .tile {
     width: 100%;
     height: 100%;
-    padding: 4px 10px 6px;
+    padding: 6px var(--pad-x) 10px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--gap);
     min-height: 0;
     overflow: hidden;
 }
@@ -141,16 +157,35 @@ var ICON_VOL = '&#128266;';
 var ICON_MUTE = '&#128263;';
 
 function applyLevel() {
-    var h = document.documentElement.clientHeight || window.innerHeight || 0;
+    var root = document.documentElement;
+    var h = root.clientHeight || window.innerHeight || 0;
+    var w = root.clientWidth || window.innerWidth || 0;
     var b = document.body;
 
-    // Platz fuer den Symcon-Titel: skaliert mit der Hoehe, mindestens 18px
-    var spacer = Math.max(18, Math.min(h * 0.13, 34));
-    document.documentElement.style.setProperty('--spacer-h', spacer.toFixed(0) + 'px');
+    // Skalierungsfaktor: Smartphone-Kachel ist breit (~350px) aber kurz (~170px).
+    // Aus beiden Kanten, Mindestfaktor 1.2 fuer gut bedienbare Touch-Elemente,
+    // Obergrenze 1.8 damit bei kleinen Kacheln nichts abgeschnitten wird.
+    var scale = Math.max(1.2, Math.min(1.8, Math.min(w / 320, h / 160)));
+    var fs = function (base) { return (base * scale).toFixed(1) + 'px'; };
+
+    root.style.setProperty('--fs-sub', fs(13));
+    root.style.setProperty('--fs-lbl', fs(13));
+    root.style.setProperty('--fs-val', fs(15));
+    root.style.setProperty('--fs-select', fs(14));
+    root.style.setProperty('--btn-h', Math.round(44 * scale) + 'px');
+    root.style.setProperty('--btn-w', Math.round(44 * scale) + 'px');
+    root.style.setProperty('--btn-fs', fs(18));
+    root.style.setProperty('--pbtn-h', Math.round(44 * scale) + 'px');
+    root.style.setProperty('--pbtn-fs', fs(18));
+    root.style.setProperty('--thumb', Math.round(22 * scale) + 'px');
+    root.style.setProperty('--track', Math.round(6 * scale) + 'px');
+    root.style.setProperty('--gap', Math.round(10 * scale) + 'px');
+    root.style.setProperty('--pad-x', Math.round(14 * scale) + 'px');
+    root.style.setProperty('--spacer-h', Math.round(Math.max(20, Math.min(h * 0.13, 40))) + 'px');
 
     b.classList.remove('lvl-tiny', 'lvl-micro');
-    if (h > 0 && h < 110) b.classList.add('lvl-micro');
-    else if (h > 0 && h < 155) b.classList.add('lvl-tiny');
+    if (h > 0 && h < 130) b.classList.add('lvl-micro');
+    else if (h > 0 && h < 185) b.classList.add('lvl-tiny');
 }
 if (window.ResizeObserver) new ResizeObserver(applyLevel).observe(document.documentElement);
 window.addEventListener('resize', applyLevel);
