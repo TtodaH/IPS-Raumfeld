@@ -36,22 +36,38 @@
     --track: rgba(17,24,39,.16); --chip: rgba(17,24,39,.05); --chip-b: rgba(17,24,39,.13);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
-html, body { width: 100%; max-width: 100%; height: 100%; overflow: hidden; background: var(--card); color: var(--text);
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+body {
+    background: transparent;
+    color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
-.tile { height: 100%; display: flex; flex-direction: column; justify-content: space-between;
-    gap: 3px; padding: 4px 7px; box-sizing: border-box; overflow: hidden; }
+.tile {
+    width: 100%;
+    height: 100%;
+    padding: 4px 10px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 0;
+    overflow: hidden;
+}
 
 /* Platzhalter fuer den IP-Symcon-Kacheltitel: Symcon zeichnet den Objektnamen
    UEBER das HTML. Ohne diesen Platz wird der obere Inhalt verdeckt. */
-.spacer { flex: 0 0 auto; height: var(--spacer-h, 18px); }
+.symcon-header-spacer { width: 100%; flex: 0 0 auto; height: var(--spacer-h, 18px); }
 
 /* Kopfzeile: Untertitel links, Buttons rechts */
-.head { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; min-width: 0; max-width: 100%; overflow: hidden; }
+.head { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; min-width: 0; overflow: hidden; }
 .sub { flex: 1 1 auto; min-width: 0; font-size: 11px; color: var(--muted); line-height: 1.2;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.hbtn { flex: 0 0 auto; width: 26px; height: 26px; padding: 0; border-radius: 50%; border: 1px solid var(--chip-b);
+.hbtn { flex: 0 0 auto; width: 28px; height: 28px; padding: 0; border-radius: 50%; border: 1px solid var(--chip-b);
     background: var(--chip); color: var(--muted); font-size: 12px; line-height: 1; cursor: pointer;
     display: flex; align-items: center; justify-content: center; font-family: inherit; }
 .hbtn:active { transform: scale(.94); }
@@ -94,7 +110,7 @@ body.lvl-micro .foot, body.lvl-micro .row-source, body.lvl-micro .lbl, body.lvl-
 </head>
 <body>
 <div class="tile">
-    <div class="spacer" id="spacer"></div>
+    <div class="symcon-header-spacer"></div>
     <div class="head">
         <div class="sub" id="tSub"></div>
         <button class="hbtn" id="btnMute" title="Stumm">&#128266;</button>
