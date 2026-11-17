@@ -36,18 +36,18 @@
     --chip-b: rgba(255,255,255,.13);
 
     /* Skalierung per JS aus echter Kachelgroesse */
-    --fs-sub: 14px;
+    --fs-sub: 12px;
     --fs-row: 15px;
     --fs-val: 15px;
-    --icon: 20px;
-    --gap: 10px;
-    --pad-x: 14px;
-    --spacer-h: 28px;
-    --thumb: 24px;
-    --track-h: 6px;
-    --toggle-w: 52px;
-    --toggle-h: 30px;
-    --pbtn-h: 48px;
+    --icon: 18px;
+    --gap: 6px;
+    --pad-x: 10px;
+    --spacer-h: 22px;
+    --thumb: 18px;
+    --track-h: 4px;
+    --toggle-w: 42px;
+    --toggle-h: 24px;
+    --pbtn-h: 34px;
 }
 :root[data-theme="light"] {
     --text:#111827; --muted:#5b6472;
@@ -212,26 +212,31 @@ var ICON_MUTE = ICONS["vol-x"];
 function applyLevel() {
     var root = document.documentElement;
     var h = root.clientHeight || window.innerHeight || 0;
-    var w = root.clientWidth || window.innerWidth || 0;
     var b = document.body;
-    var scale = Math.max(1.1, Math.min(1.7, Math.min(w / 320, h / 170)));
+
+    // Native Symcon-Kacheln skalieren NICHT - sie nutzen feste Groessen.
+    // Wir verkleinern nur, wenn die Kachel zu klein ist (sonst wird abgeschnitten).
+    var scale = h > 0 ? Math.max(0.72, Math.min(1.0, h / 190)) : 1.0;
     var px = function (base) { return (base * scale).toFixed(1) + 'px'; };
-    root.style.setProperty('--fs-sub', px(14));
+
+    root.style.setProperty('--fs-sub', px(12));
     root.style.setProperty('--fs-row', px(15));
     root.style.setProperty('--fs-val', px(15));
-    root.style.setProperty('--icon', Math.round(20 * scale) + 'px');
-    root.style.setProperty('--gap', Math.round(10 * scale) + 'px');
-    root.style.setProperty('--pad-x', Math.round(14 * scale) + 'px');
-    root.style.setProperty('--thumb', Math.round(24 * scale) + 'px');
-    root.style.setProperty('--track-h', Math.round(6 * scale) + 'px');
-    root.style.setProperty('--toggle-w', Math.round(52 * scale) + 'px');
-    root.style.setProperty('--toggle-h', Math.round(30 * scale) + 'px');
-    root.style.setProperty('--pbtn-h', Math.round(48 * scale) + 'px');
-    root.style.setProperty('--spacer-h', Math.round(Math.max(20, Math.min(h * 0.14, 40))) + 'px');
+    root.style.setProperty('--icon', px(18));
+    root.style.setProperty('--gap', px(6));
+    root.style.setProperty('--pad-x', px(10));
+    root.style.setProperty('--thumb', px(18));
+    root.style.setProperty('--track-h', px(4));
+    root.style.setProperty('--toggle-w', px(42));
+    root.style.setProperty('--toggle-h', px(24));
+    root.style.setProperty('--pbtn-h', px(34));
+    root.style.setProperty('--spacer-h', Math.round(Math.max(16, Math.min(h * 0.12, 26))) + 'px');
+
     b.classList.remove('lvl-tiny', 'lvl-micro');
-    if (h > 0 && h < 130) b.classList.add('lvl-micro');
-    else if (h > 0 && h < 190) b.classList.add('lvl-tiny');
+    if (h > 0 && h < 140) b.classList.add('lvl-micro');
+    else if (h > 0 && h < 200) b.classList.add('lvl-tiny');
 }
+
 if (window.ResizeObserver) new ResizeObserver(applyLevel).observe(document.documentElement);
 window.addEventListener('resize', applyLevel);
 window.addEventListener('load', applyLevel);
